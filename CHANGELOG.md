@@ -1,0 +1,1580 @@
+## 0.1.0 (十二月 23, 2019)
+  - added bump-version.sh for easier versioning
+  - Fixed strech_sway=1 param, local_avgpool for large size
+  - Added stretch_sway
+  - Update Readme.md
+  - Another fix for [batchnorm] layer
+  - Fixed [batchnorm] layer
+  - Added [local_avgpool] layer
+  - Disabled CUDNN_TENSOR_OP_MATH_ALLOW_CONVERSION, and only if groups==1 use CUDNN_TENSOR_OP_MATH
+  - Increased speed on Tensor Cores for csresnext50-panet-spp.cfg model
+  - Update Readme.md
+  - Minor fix
+  - Added csresnext50-panet-spp.cfg
+  - Fixed a bug in counters_per_class=
+  - Added param counters_per_class=100,200,... <for each class> to [yolo] and [Gaussian_yolo] to solve class-imbalance-problem
+  - Another one minor fix
+  - Minor fix
+  - Added the ability to compile in C++ (Makefile USE_CPP=1)
+  - Some fixes
+  - Fixed DropBlock bug for Conv-networks. When are used: random=1 and [dropout] dropblock=1
+  - Stretch conv-kernel
+  - Dropped out items are has compensated
+  - Rotate conv-kernel
+  - Sway conv-kernel
+  - Fixed activation=NORM_CHAN gradient
+  - Minor fix
+  - Fixed DropBlock [dropout] dropblock_size_abs=7 dropblock_size_rel=0.5
+  - Fixed backward_scale_channels_kernel() for ASFF
+  - Added DropBlock. Use [dropout] dropblock=1 dropblock_size=0.5 probability=0.1
+  - Minor fix
+  - Accelerated [Gaussian_yolo] layer
+  - Fixed time_step=1 for darknet.so/dll
+  - Fixed memory leak in ./darknet detector demo ...
+  - Added label_smooth_eps=0.1 for [net] layer for Label Smoothing for Classifier
+  - Added label_smooth_eps=0.1 for [yolo] and [Gaussian_yolo] layer for Label Smoothing
+  - Minor fix
+  - Compile fix
+  - Compile fix
+  - Improved mosaic=1 for Detector
+  - Another version of mosaic=1 for Detector
+  - Remove eps=0.0001 from gradient of normalize_channels_softmax
+  - Added [convolutional] activation=normalize_channels_softmax
+  - Fixed types in the image_opencv.cpp/h that could lead to a memory leak
+  - Minor fixes
+  - Added ./darknet detector valid for KITTI and BDD (were previously MSCOCO and ImageNet)
+  - Minor fix
+  - Minor fix
+  - Added blur=1 for Classifier training if OPENCV=1 (removes textures like in stylized-ImageNet)
+  - Minor fix
+  - Added mosaic=1 data augmentation for Detector. Fixed blur=. Fixed [scale_channels] for ASFF.
+  - reduced pinned memory step
+  - Fixed blur= parameter for train detector
+  - Fixed CPU-RAM + GPU-processing bug for Dropout-layer
+  - Merge pull request #2912 from cenit/dev/cenit/setup
+  - move setup scripts to scripts subfolder
+  - Added mosaic=1 data augmentation for Classifier
+  - Fixed training with GPU=1 CUDNN=0
+  - Fixed memory leak for ./darknet classifier predict ... < list.txt
+  - Minor fix
+  - Fixed CutMix - removed boundary-aware constraint
+  - Fixed bug with [shortcut] layer and SWISH / MISH activations
+  - iou_normalizer= now affects on default [yolo] with default mse-loss
+  - Compile fix
+  - another compile fix
+  - Compile fix
+  - Added HTTP POST sender with detected objects, use: ./darknet detector demo ... -http_post_host webhook.site/898bbd9b-0ddd-49cf-b81d-1f56be98d870
+  - improved accuracy of inference-time and FPS measurement for Classifier
+  - iou_normalizer= will affect on x,y,w,h for default [Gaussian_yolo] layer even without (C/D/GIoU)
+  - Added `./darknet detector demo ... -time_limit_sec 10` to limit detection time
+  - Addex cutmix=1 and fixed mixup=1 for Classifier
+  - Added mixup=1 for Classifier training
+  - Fixed minor bugs and memory leaks
+  - Added resnet101.cfg
+  - ReLU is integrated to activation=normalize_channels
+  - Added Fusion features for ASFF and for BiFPN(EfficientDet)
+  - Minor fix
+  - Fixed: revert disabled mAP calculation during training.
+  - Compile fix
+  - You can train with mini_batch=128 (batch=256 subdivisions=2) on GPU 8 GB VRAM + 128 GB CPU-RAM and more. Set in cfg-file: optimized_memory=3 and workspace_size_limit_MB=2000 or 4000
+  - Fixed random=1 for assisted_excitation_forward
+  - Added init_cpu() function to init CPU just to speedup the 1st detection (if GPU=0)
+  - Merge pull request #4364 from giordano/fix-mingw
+  - Merge pull request #4368 from HagegeR/master
+  - Update Readme.md
+  - minor fix Readme.md
+  - Fix typo
+  - added gaussian documentation
+  - cleanup vcpkg cache
+  - remove unnecessary gcc installation on travis
+  - Merge branch 'dev/alexey/master' into dev/cenit/setup
+  - Fix compilation for Windows with MinGW
+  - fixed consistency darknet and python code
+  - CIOU and DIOU fix
+  - diounms_sort() fixed
+  - Minor compile fix and references to DIoU-darknet repo and paper
+  - Compile fix
+  - Added DIoU and CIoU to [yolo] and [Gaussian_yolo]
+  - Fixed MISH activation with 2 thresholds in Softplus
+  - Update Readme.md
+  - Merge pull request #4302 from dccho/master
+  - Fixed MISH as in thomasbrandon/mish-cuda implementation with 1 Threshold
+  - Merge pull request #4341 from giordano/objdir-makefile
+  - Add $(OBJDIR) as prerequisite to $(LIBNAMESO)
+  - Merge pull request #1 from AlexeyAB/master
+  - fix memory free bug
+  - GIoU + Gaussian fix
+  - Minor fix
+  - Compile fix
+  - Bug fix
+  - gaussian_yolo: added uc_normalizer and minor fix for iou_normalizer for GIoU.
+  - gaussian_yolo: added uc_normalizer and minor fix for iou_normalizer for GIoU.
+  - Added GIoU to [Gaussian_yolo]. Added iou_thresh=0.213 to [Gaussian_yolo].
+  - Fixed source and destination overlap in sprintf() (i.e. in strcpy() inside)
+  - Fixed some memory leaks in secondary functions
+  - Added delta_yolo_box_accumulate(). Added iou_thresh=0.213 parameter to [yolo] layer IoU(anchor,truth).
+  - enable random resize training for efficient net
+  - Fixed ignore_thresh
+  - Fixed recent memory leak for Classifier
+  - Minor fix in batchnorm_layer (side effect in python samples)
+  - accelerated the c++ example of usage DLL/SO library for images if compiled with OpenCV
+  - Fixed non-square network for Training Classifier
+  - Take TopK from obj.data file for Classifier
+  - Fixed MISH instability
+  - Fixed swish-activation for [shortcut_layer]
+  - fixed memory deallocation
+  - Revert to old Assisted Excitation version.
+  - Merge pull request #4269 from 7FM/master
+  - Fix undefined behavior caused by delete
+  - Optimized memory allocation for Detection (inference only), without allocation memory for training
+  - Update Readme.md
+  - Added groups= and groupd_id= params to the [route] layer
+  - Fixed params.net in parse_convolutional() and parse_route()
+  - Added URL to the description of activation MISH on GitHub
+  - Added MISH activation, use activation=mish in [convolutional] layers
+  - Fixed darknet.py for Uncertainty (gaussian_yolo_layer)
+  - Fixed ./darknet partial for Anti-aliasing
+  - Compile fix
+  - Use non-blocking sockets for JSON_server and MJPEG_server
+  - Fixed legacy compilation using MSVS (gaussian_yolo_layer)
+  - Fixed Blur and Try to use new Assisted Excitation.
+  - minor fix
+  - Added scale_x_y to [Gaussian_yolo]. Fixed blur=10;
+  - cfg-param blur > 1 is fixed (bilateral filter removes textures)
+  - Fixed antialiasing=1 for [convolutional] layer
+  - Fixed [Gaussian_yolo] layer (tested for training and detection)
+  - another compile fix
+  - Compile fix
+  - Added Gaussian YOLOv3 layer [Gaussian_yolo]
+  - Added debugging info for Training Classifier for case: Too many or too few labels
+  - Use ignore_thresh only if class_id matched. Temporary changed Assisted_Excitation (reduces background activations rather than enhancing objects activations). Added antialiasiong=2 for 2x2.
+  - Update Readme.md
+  - Merge pull request #3375 from acxz/build_instructions
+  - Add readability changes
+  - Merge pull request #3501 from shooorf/master
+  - Update Readme.md
+  - Update readme.md
+  - Update Readme.md
+  - Readme.md
+  - Create FUNDING.yml
+  - Update readme.md
+  - Merge pull request #3946 from keko950/batch
+  - Removed useless snippet that only breaks if batch processing is enabled
+  - Fixed shortcut_layer for antialiasing
+  - Minor fix
+  - Fixed stride_x and stride_y. Fixed AntiAliasing. Minor fixes.
+  - compile fix
+  - Added yolov3-tiny-prn.cfg and enet-coco.cfg (EfficientNetb0-Yolo- 45.5% mAP@0.5 - 3.7 BFlops) https://github.com/WongKinYiu/PartialResidualNetworks
+  - Fixed assisted_excitation and added also for [shortcut] layer
+  - Added assisted_excitation=1 for [convolutional] layer on GPU
+  - Added: efficientnet_b0.cfg
+  - Added antialiasing=1 param for [maxpool]-layer on GPU and CPU
+  - Added antialiasing=1 param for [convolutional]-layer on CPU (only forward inference)
+  - Added antialiasing=1 param for [convolutional]-layer on GPU
+  - Addex stride_x= and stride_y= for [convolutional] layer for MatrixNet
+  - Fixed fuse_conv_batchnorm() for TridentNet
+  - Fix training TridentNet
+  - compile fix
+  - minor fix: Unexpected end of wights-file!
+  - minor fix
+  - Max pool layer can use stride=2 or stride_x=2 stride_y=4 (isn't tested well)
+  - Merge branch 'dev/alexey/master' into dev/cenit/setup
+  - [cudnn] remove hardcoded version in cmake module (#3738)
+  - add bash setup script
+  - merge with master
+  - Update Readme.md
+  - Compile fix
+  - Added assisted_excitation_forward for training on CPU
+  - Fix sam layer
+  - Merge pull request #3685 from cenit/dev/cenit/opencv_fix
+  - Merge branch 'dev/alexey/master' into dev/cenit/opencv_fix
+  - Compile fix
+  - Added [sam] layer
+  - remove unreadable char
+  - restrict the opencv module selection to the only problematic configuration
+  - fix label option
+  - upgrade FindCUDNN module to better deal with dlls and targets
+  - bump tweak version
+  - move bool from set cache to option
+  - [pthread cmake module] fix shared target handling
+  - restore shared lib as default
+  - use selected OpenCV modules only on Windows
+  - re-enable full opencv linking as an option
+  - everything is publicly linked for libdark
+  - fixes for modern clang on linux
+  - move travis to ubuntu18.04 and simplify test matrix
+  - restore OMP symbols as public
+  - add missing links for cpp targets
+  - export missing defines and includes, hide unnecessary public symbols
+  - Merge pull request #3678 from cenit/dev/cenit/cudafix
+  - enable darknet as a library also when only MSVC build tools are installed
+  - Merge pull request #3654 from cenit/dev/cenit/cudaCMake
+  - Bug fix for TridentNet
+  - add compatibility with opencv 4.1.1
+  - option to build project using cpp compiler if c not working/available
+  - Merge pull request #3605 from jing-vision/master
+  - add a message when package is found
+  - introduce functions to detect build features
+  - Make "darknet.exe classifier predict" behavior same as "darknet.exe classifer validate"
+  - fix regression
+  - avoid 'command line is too long' error on windows
+  - re-enable cuda choice
+  - Fixed scale_channels_layer resize
+  - Added ability to use letter_box resizing in darknet.py sample
+  - Added maxpool_depth= and out_channels= params to [maxpool]
+  - Minor output fixes
+  - Check if image does not require resizing
+  - Added Swish-activation
+  - Fixed yolo_cpp_dll.vcxproj
+  - Added letter_box=1 param in [net] section (cfg-file) for keeping aspect ratio during training
+  - Fixed CUDA-implementation of back-propagation for [scale_channels]-layer
+  - Fixed darknet_no_gpu.vcxproj and yolo_cpp_dll_no_gpu.vcxproj (added scale_channels_layer)
+  - Update Readme.md
+  - Added [scale_channels] layer for squeeze-and-excitation blocks
+  - Fixed weights-size for Depthwise grouped convolutional
+  - Fixed Depth-wise (grouped) convolution for CPU and GPU (CUDNN=0/1)
+  - Merge pull request #3371 from cenit/dev/cenit/fixes
+  - Added TridentNet (state-of-art on MS COCO)
+  - clean up of README about deprecated option, invert logic of vcpkg flag in build.ps1 for improved clarity
+  - added more ways to create so an dll files
+  - fix missing pthread link for downstream users
+  - revert #3389
+  - Merge branch 'dev/alexey/master' into dev/cenit/fixes
+  - Merge pull request #3389 from adujardin/master
+  - Fix Ubuntu cmake compilation (nvcc fatal fopenmp + pthread link uselib)
+  - fixed link to cmake-gui section
+  - added cmake build instructions and reorganized some install instructions
+  - fully restore opencv option which got lost somehow
+  - fixes for clang/mac
+  - Bug fix for MS COCO json output
+  - final fix
+  - Another compile fix
+  - compile fix
+  - Added dilation parameter for convolutional, conv_lstm and crnn layers
+  - Fixed input_shortcut_gpu() for layers with different numbers of channels
+  - Mixup bug fix
+  - Added Mixup data augmentation if is used mixup=1
+  - Merge pull request #2952 from cenit/dev/cenit/include
+  - Fix network resizing for resize_conv_lstm_layer()
+  - Minor fix in cost_layer
+  - Compile fix
+  - Added scale_x_y param to [yolo]-layer (for sigmoid). In previous commit is used GIoU(generalized-iou) from  https://github.com/generalized-iou/g-darknet
+  - Added GIoU
+  - Compile fix
+  - Fixed resizing REORG_OLD layer
+  - Merge pull request #2923 from willbattel/save-best-map
+  - Merge branch 'master' into dev/cenit/include
+  - conv-LSTM training speedup
+  - Added flag -letter_box for Detection
+  - Compile fix
+  - Some conv-lstm improvements (inference speedup)
+  - Fixed reorg layer is [reorg3d], old reorg layer is [reorg]
+  - Minor fixes
+  - [cmake+cuda] improve friendliness of architecture selection
+  - Use Tensor Cores for forward-inference in conv-LSTM
+  - Minor fix
+  - Minor fix
+  - Some conv-lstm, sgdr and other fixes
+  - remove deprecated json file
+  - fix symbols usage
+  - fixes for ci and included files
+  - move towards using only modern cmake - part 3
+  - move towards using only modern cmake - part 2
+  - move towards using only modern cmake
+  - Added grouped convolutional (depth-wise convolutional)
+  - Added sequential subdivisions
+  - Added LSTM sequence detector, and blur data augmentation (for OpenCV only)
+  - [travis] disable vcpkg's built opencv[cuda] also on cuda-enabled configs, since it causes internal compiler errors. Waiting for updates from vcpkg
+  - [ci] extend timeout for vcpkg, add all vcpkg configs to allowed failures
+  - [ci] allow vcpkg failures, export CC and CXX symbols, use stb from vcpkg when not testing integrated libs
+  - Merge pull request #3029 from adujardin/fix_optflow_zed
+  - Fix cv exception when using both TRACK_OPTFLOW and ZED_STEREO
+  - Optimization when data augmentation is disabled (for OpenCV)
+  - OpenCV fix for channel=1. README.md fix
+  - fully recicle install location in target definition
+  - install header files to darknet/ subfolder
+  - [travis,cuda] add missing symbol
+  - improve CI compatibility with updated opencv@2 and opencv@3 on mac, fix variable not expanded for vcpkg
+  - disable vcpkg bootstrap when not required
+  - [ci] add tests with vcpkg on linux
+  - [dark.lib] set correct function visibility when building shared libs also for non-msvc compilers
+  - [build.sh] fix problems with empty env variables
+  - [FindCUDNN] fix unnecessary message and dll symbol
+  - [build.sh] use correct osx triplet name
+  - [headers] move .h files to our own subfolder to avoid clashes with other libraries
+  - Removed IplImage completely
+  - Save weights with best mAP
+  - add setup prerequisite script scaffolding
+  - Minor fix
+  - Merge pull request #2892 from cenit/dev/cenit/ci_apple_fixes
+  - fixes for downstream projects using darklib, disable debug build
+  - [CI] add opencv@3 on ubuntu, add caching mechanism for vcpkg on appveyor
+  - sync cmake version with hardcoded version
+  - [README] include OpenCV 4 into supported OpenCV versions
+  - [VS] add support for BuildTools (only compilers, partial installation of Visual Studio)
+  - Compile fix
+  - Minor fix
+  - [travis] improve CI configurations, add no-opencv-ones, add opencv4 on macOS [build.sh] improve handling of vcpkg [readme] update instructions for newer visual studio versions [build.ps1] add VS2015 and VS2019 using vswhere
+  - Fix for uselib and OpenCV 2.x, 3.x, 4.x
+  - OpenCV 2.x, 3.x, 4.x are supported
+  - Another fix for old and new OpenCV
+  - Removed some old OpenCV C API
+  - Minor fix
+  - Bug fix with assert() during training
+  - Fixed bug when image is missing
+  - Use -dont_show -show_imgs for Training - saves augmented images without showing
+  - All OpenCV C-functions replaced by CPP-functions
+  - 3rd part of OpenCV C-functions replaced by CPP-functions
+  - Another part of OpenCV C-functions replaced by CPP-functions
+  - Another compile fix
+  - Compile fix
+  - Some C OpenCV functions replaced by CPP functions
+  - Added flag -show_imgs for Training, to show augmented images with bboxes
+  - Moved all OpenCV functions to the image_opencv.cpp/h
+  - Merge pull request #2651 from jveitchmichaelis/sgdr
+  - Merge pull request #2768 from cenit/dev/cenit/opencv4
+  - [appveyor] add opencv[ffmpeg] also in ci
+  - [cygwin] add libncurses dependency
+  - [clang] force -pthread flag on linux to avoid some cmake bugs
+  - other fixes for travis-ci
+  - add reference to opencv[ffmpeg], fix spell errors, fix LD_LIBRARY_PATH for cuda on travis-ci, create a script to update cmake on cygwin-appveyor-ci
+  - removed cygwin ci because it has a cmake too old, leave a note for a todo build from source
+  - add ld_library_path to travis to fix [maybe] linking problems
+  - add some more messages to vcpkg auto-integration
+  - shared libs are really always default now, static are opt-in only
+  - cleanup in preparation to opencv-4 work
+  - Minor fix
+  - Compile fix
+  - Added -map_points flag for mAP calculation for MSCOCO, PascalVOC2007 / 2010-2012, ImageNet
+  - Merge pull request #2703 from agirbau/patch-1
+  - Minor fix
+  - Minor fixes
+  - Fixed path in vcxproj-files from $(OpenCV_ROOT_DIR) to  $(OPENCV_DIR)
+  - Fixed memory leak for Training with -map flag and random=1
+  - Compute Precision and recall per class
+  - Update Readme.md
+  - Moved 3rd party libraries: pthreads and stb
+  - Merge pull request #2599 from cenit/dev/cenit/stb
+  - Fix bug with demo.c
+  - improve CUDA setup instructions and templates in scripts
+  - Merge branch 'master' into dev/cenit/stb
+  - Compile fix. And minor fixes
+  - Minor fix
+  - Merge pull request #2655 from adujardin/zed_support_improvements
+  - ZED CMake fail silently if not found
+  - ZED Camera support CMakeLists + Fix Makefile
+  - get rid of learning_rate_max
+  - make option quiet
+  - add SGDR policy
+  - Minor fixes. Added ZED_CAMERA to the Makefile.
+  - Merge pull request #2631 from kehonsyo/vs2017enterprise
+  - Merge pull request #2127 from duohappy/master
+  - Merge branch 'master' into master
+  - Merge pull request #2095 from apatsekin/patch-1
+  - Merge pull request #958 from ChihHsuLin/patch-1
+  - Merge pull request #2383 from davidssmith/master
+  - Merge branch 'master' into master
+  - Fixed many warnings
+  - Merge pull request #2621 from jveitchmichaelis/tiff_ext
+  - Merge pull request #2632 from kehonsyo/suppress_c4819
+  - Minor fix
+  - Merge branch 'master' into tiff_ext
+  - Another one fix
+  - Compile fixes
+  - suppress C4819 warnings to the cuda file in CP932 environment.
+  - add Visual studio 2017 "Enterprise" edition to edition check.
+  - Another compile fix
+  - Compile fix
+  - ZED 3D Camera support added to ./uselib (yolo_console_cpp.exe) example
+  - [win-pthreads] correctly handle static libs
+  - cleaner check for extension
+  - fix output message
+  - alert user if annotation file doesn't exist
+  - find annotation files for tiff images
+  - remove unused cmake module
+  - add a switch to force build with local libs
+  - x64 only
+  - move Stb lib to 3rdparty folder
+  - Merge pull request #2542 from kossolax/patch-2
+  - Merge pull request #2536 from cenit/dev/cenit/cmakeConfig
+  - improve compatibility with latest pthreadVC renaming on vcpkg
+  - Segfault if height > width
+  - [appveyor] explode matrix to workaround time bomb
+  - create cmake targets for proper lib export
+  - Fixed mAP calculation for CRNN layer during training
+  - Merge pull request #2514 from cenit/dev/cenit/appveyor
+  - improve build script based on user feedback
+  - get & label OTB dataset
+  - switch debug/release build order, better futureproof for next cmakeTargets work
+  - add artifacts on appveyor
+  - refresh build scripts
+  - scripts/README.md
+  - fix cuda build on appveyor, remove old unsupported config on macOS
+  - Update Readme.md
+  - Compile fix
+  - Added object Detection & Tracking using conv-rnn layer on frames from video
+  - Fixed issue with killed mjpeg_stream
+  - Merge branch 'master' of github.com:AlexeyAB/darknet
+  - Added cmd/sh scripts for downloading ILSVRC2012 train & valid for Windows
+  - Merge pull request #2476 from cenit/dev/cenit/CI
+  - Fixed http_stream.cpp
+  - [appveyor-cuda] add another env variable
+  - [opencv-cuda] handle properly cuda enabled but opencv built without cuda support
+  - [appveyor] disable building opencv[cuda], it's too slow
+  - [appveyor] fix CUDA paths again
+  - [appveyor/cuda] extract all files from CUDA archive
+  - Fixed convolutional-layer when it is used as base for crnn-layer
+  - Functions for fixing nan
+  - [ci] try cuda builds on windows, skip building uselib_track if opencv does not have cuda support
+  - remove unused cpu function in .cu file
+  - [ci] add tests for included libs, add link path for linux
+  - [CI] add CUDA build tests in matrix
+  - [CI] trying to improve resiliency
+  - [CMakeLists.txt] remove references to C since CXX is the only way to build the project
+  - [travis/appveyor] add CI, remove broken empty include path from CMakeLists.txt
+  - Added a compilation for AVX = 1 in CircleCI
+  - Fixed random values
+  - Merge pull request #2461 from cenit/dev/cenit/cmake_quickfix
+  - [build.ps1] fix wrong path, enable builds only if env variable is present
+  - CMakeLists.txt temporary fix for CUDA
+  - fallback enabled only not on windows, need to investigate better the failure anyway
+  - Use both $(cudnn) and $(CUDNN) environment variables in darknet.vcxproj & yolo_cpp_dll.vcxproj
+  - Update Readme.md
+  - Update Readme.md
+  - Merge pull request #2412 from cenit/dev/cenit/yoloAlexey_cmake
+  - [CMakeLists.txt] add a compatibility include directive to workaround some regressions in enable_language(CUDA)
+  - [FindCUDNN] add another hint for newly suggested ENV variable
+  - Fixed wrong cast for XNOR-net
+  - OpenCV definition for yolo_console_dll.vcxproj
+  - Merge pull request #2394 from cenit/dev/cenit/yoloAlexey_v2
+  - restore manual control of CUDA while keeping default enabled
+  - remove some unnecessary exports
+  - automatically detect CUDA and use it, without any possible manual intervention
+  - improve CMake default behaviour to use integrated libs
+  - fully separate C-API from CPP-API
+  - Minor fixes
+  - move as many defs as possible away from darknet.h
+  - improve CMake alternative, add instructions in README
+  - include some requested modifications
+  - improve compatibility with c++ compilers, prepare for CMake
+  - add CMakeLists.txt and necessary modules
+  - Update Readme.md
+  - Minor fix
+  - Use Tensor Cores only when (channels % 8 == 0) and (filters % 8 == 0)
+  - Optimized memory allocation for XNOR on CPU
+  - Fix for GCC on ARM 32/64-bit
+  - fix assorted compile warnings
+  - Compile fix
+  - Try to fuse conv_xnor+shortcut -> conv_xnor
+  - more accurate time measurements in Demo
+  - Minor demo fix
+  - Fixed RNN (LSTM, RNN, CRNN, GRU) for CUDNN_HALF=1
+  - get_connected_workspace_size() and get_convolutional_workspace_size()
+  - Fixed set_batch_network(), when workspace larger for smaller batch
+  - Minor fix for CHECK_CUDA()
+  - Minor fix
+  - Draw top5 accuracy on the Loss-chart for training Classifier
+  - Another minor fix
+  - Minor fix
+  - Merge pull request #2359 from aughey/master
+  - Partial fixed
+  - Partial fixed
+  - Rewriting darknet_video.py to reuse darknet.py as a lib
+  - Update Readme.md
+  - Minor Python and C API improvement
+  - Merge pull request #2352 from aughey/master
+  - Fixed checking CC for enabling Tensor Cores
+  - CUDNN_HALF and CC 7.5 by default in darknet.sln
+  - CUDNN_HALF and CC 7.5 by default in darknet.sln
+  - Making a fast API compatible way to copy image data.
+  - Making a pointer version of network_predict for python.
+  - Optimizing network_predict_image to resize only if necessary.
+  - Fixed bug in Tensor Cores training
+  - CHECK_CUDA is used everywhere
+  - DEBUG=1 fixed
+  - Minor fixes
+  - Checks Compute Capability and forcibly disables Tensor Cores for CC < 7.0
+  - Compile fix
+  - CUDA_CHECK definition for debug
+  - Minor performance improvement
+  - improve XNOR Tensor Cores GEMM - N 2x unrolled - minor performance improvement
+  - Minor fixes
+  - Speedup repack_input_kernel_bin()
+  - Minor fixes
+  - Fixed __shfl() and __ballot() warnings
+  - Update Readme.md
+  - XNOR uses Tensor Cores on Turing GPU CC>=7.3 (not Volta)
+  - Minor fix
+  - Added crnn.train.cfg just for test
+  - Fixed CRNN (RNN based on Convolution) layer
+  - Add try-catch to the http_stream.cpp
+  - Added cudaGetLastError() for cudaHostAlloc() to reset last cuda error
+  - Fixed CUDA error checking
+  - Another compile fix
+  - Compile fix
+  - LSTM, RNN, GRU - use connected_layer that uses cuDNN. Fixed CRNN for conv-layer with cuDNN.
+  - Fixed DLL/SO
+  - Compile fix
+  - Fixed LSTM-layer
+  - Use non-default stream for all CUDA-functions
+  - Fixed RNN (RNN, GRU, LSTM) with cuDNN (batch-norm)
+  - Fixed memory allocation
+  - Minor speedup on CPU
+  - Minor CPU speedup - i7 6500K: 1000ms (AVX=1) instead of 1500ms (old AVX=1) and 2000ms (AVX=0)
+  - Compile fix on Windows
+  - Merge pull request #2282 from davidssmith/master
+  - Compile fix for CC < 7.3
+  - add lstm_layer.o to Makefile
+  - add LSTM layer
+  - Update Readme.md
+  - Look at wmma::bmma_sync(), bmmaBitOpXOR, bmmaAccumulateOpPOPC
+  - Merge pull request #2272 from Sauraus/master
+  - gcc on OSX required explicit return value for empty (char *) in detection_to_json
+  - Another minor fix
+  - Merge branch 'master' of github.com:AlexeyAB/darknet
+  - Minor fix
+  - Update Readme.md
+  - Fixed network resize memory allocation
+  - Fixed calc_anchors
+  - Update Readme.md
+  - XNOR minor fix
+  - Network resize is fixed
+  - Fixed timer
+  - Fix for compilation on Google Colab
+  - Experimental repack
+  - Another CUDA performance improvements
+  - Merge remote-tracking branch 'upstream/master'
+  - CUDA minor performance improvement
+  - Temporary experimental XNOR on GPU (repack channels)
+  - Update Readme.md
+  - Update Readme.md
+  - Merge remote-tracking branch 'upstream/master'
+  - Training minor fix
+  - Minor fix
+  - Merge remote-tracking branch 'upstream/master'
+  - Compile fix
+  - Added -mjpeg_port 8090 for Training. Loss-chart saved to chart.png even when used -dont_show. mAP is calculated during training even without OpenCV.
+  - Minor fix
+  - Update Readme.md
+  - Added SO_REUSEADDR and SO_REUSEPORT for JSON & MJPEG streams
+  - Fixed JSON-stream and MJPEG-stream on Windows and Linux.
+  - Merge pull request #2179 from jureviciusr/patch-1
+  - Bad memory allocation
+  - Compile fix
+  - Fixed ./darknet detect ...
+  - Fixed bug with saving training Loss-Chart
+  - Use detector test...-out result.json -dont_show < train.txt to save results to JSON-file
+  - Another compile fix )
+  - Compile fix
+  - Graceful shutdown closes sockets
+  - Experimental. Use -json_port 8070 to allow connection to the port:8070 to get json-stream
+  - Now you can un-comment several lines for saving images of cropped objects to /result_img/ directory
+  - Fixed compiling yolo_cpp_dll.sln in Debug & x64
+  - Added include/darknet.h
+  - Compile fix
+  - Minor fix
+  - Update Readme.md
+  - Temporary experimental XNOR improvements on CPU
+  - Update Readme.md
+  - Added yolov3-tiny_3l.cfg for small objects
+  - Minor fix
+  - Use `dont_show` in the obj.data file to disable detection for a specific class
+  - in yolo_cpp_dll.sln, miss a “\”
+  - Adam optimizer fixed
+  - Fix training approach (convolutional layer)
+  - Minor fix for mAP calculation during training
+  - Merge pull request #2111 from heethesh/master
+  - Fixed typo in weights file
+  - Optimized memory consumption during Training with -map flag
+  - Minor fix for multi-GPU training with -map flag
+  - Compile fix
+  - Fixed mAP chart during training for CUDNN=1
+  - Update README.md (steps= for multi-gpu)
+  - Update Readme.md
+  - get_coco_dataset.sh downloads MS COCO dataset from images.cocodataset.org
+  - Fix mAP chart
+  - Update Readme.md
+  - Update Readme.md
+  - Fixed drawing mAP
+  - Update Readm.emd
+  - Speedup Tensor Cores: 1st layer uses FP32 and pre-allocate GPU memory for Tensor Cores
+  - Another one minor fix
+  - Some fix for CUDNN_HALF
+  - calc_anchors can be used without OpenCV, and it uses (1-IoU) instead of Euclidean distance
+  - Minor fix
+  - Update Readme.md
+  - Switch to Tensor Cores after 2000 iterations.
+  - When is used -map flag for training - calculate mAP for each 4 Epochs.
+  - Update Readme.md
+  - Update Readme.md
+  - Compilation fix
+  - mAP calculation during training, if is used flag -map
+  - Compile fix
+  - Fixed nan issue for training with CUDNN_HALF=1 by using Tensor Cores
+  - Saving loss-chart for each 100 iterations automatically
+  - Minor fixes. Use CUDA 10.0
+  - Added -iou_thresh 0.05 flag for ./darknet detector map
+  - Added fast_binarize_weights_gpu()
+  - Update Readme.md
+  - Minor fix
+  - Update Readme.md
+  - Merge pull request #1816 from vinliao/master
+  - fix wrong path
+  - Fixed bug for 32-bit compilation without GPU.
+  - transpose 32x32 on GPU
+  - Transpose on CPU fix
+  - Compile fix
+  - Fixed maxpool_layer by using cuDNN. Added transpose 32 bit on CPU.
+  - Minor fix
+  - Fixed detector test for 1-channel images (black-white / infrared)
+  - Minor fix
+  - Added yolov3-openimages.cfg and SELU activation
+  - Minor fix
+  - Fix building darknet.so on MacOS
+  - Compilation fix for OpenCV 3.4.x and Jetson Xavier.
+  - Fix OpenCV compilation. maxpool_layer on GPU uses cuDNN.
+  - Merge pull request #1724 from eon129/master
+  - Classifier now is working. The file softmax_layer.c was outdated
+  - Version 0.2.5 - fixed )
+  - Version 0.2.5 )
+  - Added darknet53.cfg and resnext152-32x4d.cfg
+  - Compile fix
+  - Added mistakes checking
+  - Another compile fix
+  - Compile fix
+  - Activation improvement, more robust timer.
+  - Minor fixes
+  - Update Readme.md
+  - XNOR-net tiny-yolo_xnor.cfg ~2x faster than cuDNN on CUDA (nVidia GPU Maxwell)
+  - Compile fix
+  - XNOR coalesced memory access, and avoid bank conflicts
+  - Update Readme.md
+  - Update Readme.md
+  - Fixed openmp bugs for XNOR
+  - Test for XNOR-conv on CUDA
+  - another compile fix
+  - Compile fix
+  - Temporary Slow implementation of XNOR on CUDA (shared_memory)
+  - Temporary implementation of XNOR on CUDA
+  - temp fix, don't use it
+  - Fixed yolov3-tiny_xnor.cfg
+  - Added tiny-yolo-v2-XNOR-cfg-file: tiny-yolo_xnor.cfg
+  - Added yolov3-tiny_xnor.cfg
+  - Merge branch 'master' of github.com:AlexeyAB/darknet
+  - XNOR-net 4x acceleration on CPU for yolov2-tiny - 22 FPS (CPU Core i7 6700K)
+  - XNOR-net 21 FPS on CPU yolov2-tiny.cfg
+  - Merge pull request #1466 from r0l1/master
+  - updated README to include information about learning rate adjustment for multiple GPUs
+  - maxpool_layer on CPU uses AVX2 and OpenMP
+  - Added trim() function for label paths
+  - Update Readme.md
+  - Update Readme.md
+  - Minor fix
+  - Fix GCC compile
+  - Different checks for AVX and FMA
+  - Update Readme.md
+  - Fixed yolov3-tiny.cfg
+  - Merge pull request #766 from HotChick91/AlexeyAB-mask
+  - Fixes for MSVS2017
+  - Merge pull request #1416 from mhaghighat/master
+  - Update to prevent the error at Line 74: data being one-dimensional
+  - Another one fix for MSVS2017
+  - Fix for MSVS2017 for _mm256_extract_epi64 and _mm256_extract_epi32
+  - Some fixes for AVX support on CPU
+  - Fixed AVX compiled bug
+  - Experiments
+  - Bug fixes. Tested im2col_cpu_custom_transpose - bad way.
+  - Optimized: transpose
+  - Update Readme.md
+  - Fixed wrong labels
+  - Another one fix
+  - Compile error fix
+  - Optimized on CPU: gemm_bin, im2col, activation, transpose
+  - Try to use avx_hs() - slow and requires alignment 4096 bits < (l.size*l.size*l.c) May be faster only from 8192 bits and more.
+  - XNOR-net on CPU AVX2
+  - Maxpool fixes
+  - Merge pull request #1337 from Adesun/log_parser
+  - * make regex compatible with new code * fix #777 exceeds Locator.MAXTICKS * set non-interactive backend when OS is not windows * save figure as SVG
+  - max pool layer is fixed
+  - Added spatial Yolo v3 yolov3-spp.cfg
+  - Merge pull request #1218 from jing-vision/master
+  - PascalVOC label scripts are updated
+  - Expose YOLODLL_API void top_k()
+  - Merge pull request #1212 from tinohager/master
+  - optimize performance detect
+  - Update Readme.md
+  - Merge pull request #1172 from sberan/flush-stdout
+  - ext_output: flush stdout after printing output
+  - Merge pull request #1171 from tinohager/master
+  - Just used spaces for indents instead of Tabs
+  - Get gpu count and name
+  - Fix for MS COCO validation
+  - Merge pull request #1152 from jing-vision/master
+  - Update Readme.md
+  - cuda.h - converts tab to space
+  - Update Readme.md
+  - Merge pull request #1132 from tinohager/master
+  - Update Readme.md
+  - Expose YOLODLL_API void cuda_pull_array()
+  - Optimize YoloWrapper
+  - Update Readme.md
+  - Minor fixes
+  - Fixed arch=compute_53,code=[sm_53,compute_53] for Jetson TX1
+  - Merge pull request #1117 from Rus-L/master
+  - Update gemm.c
+  - Merge pull request #1111 from tinohager/master
+  - remove max_objects
+  - repair tabs spaces
+  - repair tabs spaces
+  - repair tabs spaces
+  - merge changes
+  - Merge branch 'master' of https://github.com/AlexeyAB/darknet
+  - optimize max object definition
+  - Merge pull request #1106 from jing-vision/master
+  - Expose optimize_picture() in DLL
+  - Minor fix
+  - Minor fix
+  - Merge pull request #1085 from tinohager/master
+  - fix build error, add c# wrapper class
+  - rename c++ method
+  - Merge branch 'master' of https://github.com/AlexeyAB/darknet
+  - Fixed ability for support OpenCV for yolo_cpp_dll_no_gpu.sln
+  - .NET/C# support integration
+  - Revert ".NET/C# support integration"
+  - .NET/C# support integration
+  - Update Readme.md
+  - Minor fix: darknet.py for OpenCV
+  - Able letterbox for video
+  - Fixed removing escape symbols for command line arguments
+  - Minor fix
+  - Update Readme.md
+  - Fixed darknet.py when OpenCV is used (added BGR to RGB conversion)
+  - Output video-file has the same FPS as source video-stream. Exit from demo by ESC.
+  - Fixed some security issues
+  - Update Readme.md
+  - Added warning if width or height isn't divisible by 32 for default Yolo-networks
+  - Update Readme.md
+  - Minor fix
+  - Minor fix
+  - Merge pull request #1017 from jing-vision/master
+  - Minor fix
+  - Expose YOLODLL_API layer* get_network_layer(network* net, int i);
+  - Update Readme.md
+  - Update Readme.md
+  - Update Readme.md
+  - Update Readme.md
+  - Minor fix
+  - Minor fix
+  - Show inconsistent information if it is present in .cfg and .names files
+  - Letter box is disabled in the darknet.py by defualt
+  - Merge pull request #981 from IlyaOvodov/Fix_get_color_depth
+  - Merge branch 'master' of https://github.com/AlexeyAB/darknet into Fix_get_color_depth
+  - Net color depth is exposed from Detector class
+  - Update Readme.md
+  - By default letter_box is disabled
+  - Update Readme.md
+  - Update Readme.md
+  - You can do: fuse_conv_batchnorm(network net) from DLL/SO-library
+  - Store wrong annotations to the file: bad_labels.list
+  - Fix for unreliable IP-cameras
+  - Fix for multi-GPU and DGX
+  - Minor fix
+  - Minor fixes
+  - Merge pull request #946 from jinyu121/master
+  - Fix the path to voc.data
+  - Merge pull request #936 from IlyaOvodov/Fix_GrayScale_PR
+  - Merge pull request #950 from IlyaOvodov/Fix_size_PR
+  - Fix error in allocation size
+  - Fix openCV 3.4.1 highgui
+  - "channel" parameter of [net] is used in detector when preparing images for net.
+  - Ignore empty extra lines in train.txt
+  - Fix: Ignore incorrect dataset labels instead of causing seg-fault error.
+  - Fixed top-coordinate output when -ext_output is used  for video
+  - Merge pull request #913 from jing-vision/master
+  - Minor fix
+  - classifier.c - add the awesome training chart and make sure "top" is not bigger than "classes" in datacfg file.
+  - Merge pull request #909 from jing-vision/master
+  - classifier.c - set batch=1 in "predict", "demo" and "try" mode.
+  - Update Readme.md
+  - Classifier uses C++ OpenCV cv::VideoCapture that hasn't bugs.
+  - Minor fixes
+  - Fixed memory leaks for Yolo: train, test
+  - Minor fix: warning-message if in labels class_id >= classes in cfg-file
+  - Fixed seg-fault that occurred if <class_id> in labels more than classes= in the cfg-file.
+  - Fixed replace_image_to_label(): replaces directories only for Pascal VOC and COCO, replaces only extensions for other.
+  - Experimental reinforcement learning.
+  - For Release build - equality check: output of [convolutional] == input of [yolo].
+  - Fixed compile
+  - Added flag -ext_output for detector demo. Fixed proportional resize of network for random=1
+  - Fixed demo for video files: is used do_nms_sort() instead of do_nms_obj().
+  - Save jpg-images for detector demo if used flag: -prefix <filename>
+  - Supported files for training: jpg, jpeg, bmp, png, ppm - and UPPER CASE extensions
+  - Merge pull request #856 from vinjn/patch-1
+  - darknet.py - apply the same changes to build/darknet/x64/
+  - darknet.py - loading dll files by absolute name
+  - darknet.py - remove unnecessary check of CUDA_HOME
+  - Added flag -save_labels to save detections as training labels txt-files (pseudo labeling concept)
+  - Fixed xnor for random=1
+  - Update Readme.md
+  - Merge pull request #851 from NadeenUdantha/patch-1
+  - yolov3-tiny_obj.cfg - is example for training custom objects
+  - ojbects -> objects
+  - Example of usage cv2.imread() in the darknet.py
+  - Update Readme.md
+  - Fixed resize of network for low resolution network like 128x128
+  - Merge pull request #844 from salbatron/patch-1
+  - Create get_openimages_dataset.py
+  - Support of .ppm files is realised
+  - Fixed time for ./darknet detector valid
+  - Fixed OPENCV_VERSION
+  - darknet.py change libdarknet.so to darknet.so
+  - Fixed darknet.py - uses batch=1 by default
+  - Added def array_to_image(arr): to the darknet.py Usage:     import scipy.misc     sci_image = scipy.misc.imread(image)     im, arr = array_to_image(sci_image)
+  - Added BFLOPs output for network configurations
+  - Fixed network resizing (random=1) for non-square networks
+  - Merge pull request #765 from HotChick91/AlexeyAB-code
+  - Merge branch 'master' of github.com:AlexeyAB/darknet
+  - Fixed compile error
+  - Update Readme.md
+  - Fixed README.md
+  - Merge pull request #741 from IlyaOvodov/Fix_detector_output
+  - Output improvements for detector results: When printing detector results, output was done in random order, obfuscating results for interpreting. Now: 1. Text output includes coordinates of rects in (left,right,top,bottom in pixels) along with label and score 2. Text output is sorted by rect lefts to simplify finding appropriate rects on image 3. If several class probs are > thresh for some detection, the most probable is written first and coordinates for others are not repeated 4. Rects are imprinted in image in order by their best class prob, so most probable rects are always on top and not overlayed by less probable ones 5. Most probable label for rect is always written first Also: 6. Message about low GPU memory include required amount
+  - Get pre-trained weights for Yolo v3 tiny
+  - Exit with nonzero status on error
+  - Fix yolov3-tiny mask
+  - Update Readme.md
+  - Merge pull request #760 from PuneetKohli/fix-log-parser-no-display
+  - Change matplotlib backend to 'agg' when 'show_plot' is false. This allows the script to be run from command line without any errors (for ex, on a remote machine)
+  - Minor fix - what pip-packages are required for Python scripts
+  - Merge pull request #759 from Adesun/log_parser
+  - Added yolov3-tiny.cfg
+  - Update readme.md
+  - parsing training log and plot save loss data to csv
+  - Merge pull request #754 from tigerhawkvok/python3-detection-runner
+  - Address GPU message in root dir
+  - Address GPU message in build dir
+  - fix detection paths
+  - Fix detection paths
+  - Remove debugging line
+  - Remove debugging line
+  - Also replace root version to Python3
+  - Change darknet.py to Python 3 compatibility
+  - Fixed memory leaks. And fixes for Web-camera and IP-camera.
+  - Fix webcam memory leak
+  - Output improvements for detector results: When printing detector results, output was done in random order, obfuscating results for interpreting. Now: 1. Text output includes coordinates of rects in (left,right,top,bottom in pixels) along with label and score 2. Text output is sorted by rect lefts to simplify finding appropriate rects on image 3. If several class probs are > thresh for some detection, the most probable is written first and coordinates for others are not repeated 4. Rects are imprinted in image in order by their best class prob, so most probable rects are always on top and not overlayed by less probable ones 5. Most probable label for rect is always written first Also: 6. Message about low GPU memory include required amount
+  - Merge pull request #737 from IlyaOvodov/Fix_thin
+  - FIX #736: Detector does not draw rects for images with small resolutions
+  - Increased speed of darknet.py. Fixed functions related to resize_image().
+  - Update Readme.md
+  - Fixed TP/FP/FN, IoU calculation for specified threshold
+  - Fixed SSE4.1 dependencies when AVX=1 on Linux
+  - Merge pull request #675 from IlyaOvodov/Flip_Fix
+  - Fix issue #674: parameter "flip" is added to [net] parameters for classifier and detector
+  - Fixed utils.c for short lines.
+  - Usage of calc_anchors
+  - Fixed typo for calc_anchors
+  - Fixed detection and validate(recall, map) for .png and .bmp images.
+  - Focal loss fixed
+  - Fixed Focal-loss
+  - yolo_console_dll.cpp uses Yolo v3 by default
+  - sure ODR
+  - Added flag AVX to the Makefile
+  - Fixed Python detection
+  - Update Readme.md
+  - Accelerated by another 5% using FP16/32 Batch-norm for Tensor Cores.
+  - Compile fix
+  - Added CUDNN_HALF to the Makefile
+  - Fixed AVX detection on Linux.
+  - Update Readme.md
+  - Loss-graph store automatically (iterations == max_batches) at the end of training
+  - Disable burn_in for FP16 Tensor Cores
+  - Update Readme.md
+  - Fixed bug in Tensor Cores V100 (1. Desc in Batch norm, 2. Manually selected algo). Also fixed time measure on Linux for multi-threading.
+  - Fixed resize_shortcut_layer() for resnet50_yolo.cfg on Linux
+  - Fixed darknet.py for Linux
+  - Update Readme.md
+  - Minor fix for yolo_console_dll.cpp
+  - Yolo can be used from Python 2.x using /darknet.py on Linux or darknet/x64/darknet.py on Windows
+  - Minor fix
+  - Try to fix
+  - Fixed compile with DEBUG=1
+  - Minor fixes
+  - Exit by ESC in yolo_console_dll.cpp
+  - Remove truth only if smaller than 1x1 pix during training
+  - Update Readme.md
+  - Update Readme.md
+  - Minor fix for Web Cam on OpenCV 3.x
+  - Added automatic AVX support - speedup +20% on CPU x86_64 Intel Skylake
+  - Compile fix
+  - Added Focal Loss to yolo-layer
+  - Compile error fix
+  - Detection is accelerated by 7 percent (fused conv and batch_norm layers)
+  - Minor fix
+  - Update Readme.md
+  - Fixed detector recall
+  - Update Readme.md
+  - Fixed partial.cmd for new tiny weights
+  - Update Readme.md
+  - Update Readme.md
+  - Update Readme.md
+  - Sort anchors
+  - Update Readme.md
+  - Added max_boxes for yolo v3
+  - Removed printf
+  - Changed small_object
+  - small_object can be used in [net] in cfg-file for objects 1x1 pix on FullHD image
+  - Example of anchors generation for Yolo v3
+  - Update Readme.md
+  - Update Readme.md
+  - Added yolov3-voc.cfg
+  - Yolo v3 using SO/DLL library
+  - Temporary fix
+  - Merge branch 'master' of github.com:AlexeyAB/darknet
+  - Fixed training, calculation mAP and anchors for Yolo v3
+  - Update Readme.md
+  - Update Readme.md
+  - Minor fix
+  - Update Readme.md
+  - Compile fix
+  - Added Yolo v2 bash files
+  - Minor
+  - Changed cmd and sh files. Added new cfg files for old Yolo v2.
+  - Fixed shifted boxes
+  - Fix
+  - One more try
+  - Another fix
+  - Compile fix
+  - Added Yolo v3
+  - Update Readme.md
+  - Merge pull request #505 from judwhite/patch-2
+  - Merge pull request #492 from sivagnanamn/master
+  - reversed order
+  - fix link to issue #500
+  - README.md: add notes to How to compile on Windows
+  - 3.5x times accelerated data augmentation using OpenCV for training Yolo on DGX and multi-GPU
+  - Minor changes to keep MAC OSX happy
+  - More stable web-cam
+  - Fixed uses of WebCam for OpenCV 3.x
+  - Update Readme.md
+  - Fixed gpu_id for DLL/SO
+  - Improve training performance - batch-norm using cuDNN.
+  - Fixed compile error
+  - C wrappers
+  - Fixed bug, that save weights-file for each iteration
+  - shortcut_layer resize for random=1
+  - Minor fix
+  - Added include for sprintf
+  - Fixed multi-GPU training for Tensor Cores
+  - Fixes for small objects. And fixes of densenet201_yolo.cfg, resnet50_yolo.cfg, resnet152_yolo.cfg
+  - Remove 1 additional conv 3x3 kernel layer from resnet152_yolo.cfg and resnet50_yolo.cfg
+  - Removed random=1 from resnet152_yolo.cfg. Until resize_network() isn't supported for [shortcut] layer
+  - resnet152_yolo.cfg uses learning_rate, steps, scales, decay, momentum as in the RetinaNet
+  - Added resnet152_yolo.cfg with focal_loss=1 and stopbackward=1 in the last shortcut layer.
+  - Added Focal loss. Use focal_loss=1 in the [region] layer in your cfg-file. alpha = 0.5, gamma = 2
+  - Fixed saving video file
+  - Update Readme.md
+  - Show avg-loss chart during Training, if compiled with OpenCV. Use -dont_show to disable.
+  - Compile fix
+  - Show IoU, save anchors to file.Show anchors in the window if used -show
+  - Added: calc_anchors
+  - Fixed reorg_layer. Old reorg can be used as [reorg_old] in the cfg-file.
+  - minor fix
+  - Added F1 score to accuracy statistic
+  - Update Readme.md
+  - Update Readme.md
+  - One more fix
+  - Compile fix
+  - Added param -dont_show to detect objects on servers without display, like Amazon EC2
+  - Changed class to class_id
+  - Update Readme.md
+  - Fixed VideoWriter
+  - Update Readme.md
+  - Fine-tuning densenet201_yolo.cfg and resnet50_yolo.cfg
+  - Added support for Tensor Cores CC >= 7.0 (V100). For FP16/32 (mixed precision) define CUDNN_HALF should be used.
+  - Added partial.cmd
+  - Added gen_anchors.py
+  - Update Readme.md
+  - Updated to CUDA 9.1. And fixed no_gpu dependecies.
+  - one more fix
+  - Added __float2half_rn() and __half2float()
+  - Fix
+  - Use half_float16 instead of float32 if defined both CUDNN and CUDNN_HALF. Use Tensor Cores.
+  - If there is excessive GPU-RAM consumption by CUDNN then then do not use Workspace
+  - Optimized resizing of region_layer for random=1
+  - Optimized resizing of network for random=1
+  - Minor fix
+  - Fixed Tracking using SparsePyrLKOpticalFlow on CPU
+  - Merge pull request #398 from HowardStark/master
+  - Changed definition location to adhere to compatability promises
+  - Added CPU Optical Flow
+  - Update Readme.md
+  - Minor fix
+  - Update Readme.md
+  - Added param -http_port 8090 to show MJPEG-stream in the WebBrowser (Chrome/Firefox)
+  - Calculation TP, FP, FN, avg_IoU for default threshold during mAP calculation
+  - It takes into account the Difficult for calculating mAP for PascalVOC
+  - Added C implementation of calculation mAP (mean average precision) using Darknet
+  - resnet152.cfg
+  - Added compute_mAP.cmd for calculation mAP for Pascal VOC 2007 dataset. Added reval_voc_py3.py and voc_eval_py3.py for Python3.
+  - Another compile fix error
+  - Compile fix
+  - Added linear extrapolation of coordinates
+  - Parameter (max) in the cfg-file has an effect on the Yolo-training
+  - Compile fixes
+  - Optimal params for optical flow tracking. Some small box fixes.
+  - Fixed compile error
+  - Update Readme.md - parameter for small objects
+  - Makefile added hints to compile for Jetson Tx1 and Tx2
+  - Fixed densenet201_yolo.cfg - burn_in and poly policy, that changes learning rate
+  - Fix for tracking
+  - Fixes for training Yolo on small objects
+  - Merge pull request #355 from PTS93/patch-1
+  - Merge pull request #357 from rajendraarora16/new-changes-darknet
+  - Merge pull request #369 from stereomatchingkiss/fix_bug_368
+  - Some fixes
+  - fix bug 368
+  - Tracking small fixes
+  - Fixes Readme.md for darknet_no_gpu
+  - Fix autosave interval
+  - Tracking is simplified
+  - Fixed compile error
+  - Fixed compile error
+  - Fixed preview box for short-term object detection (small box) and long-term object tracking (large box)
+  - Added preview boxes for SO/DLL usage
+  - Replaced '\r' and '\n' by 0x0d and 0x0a
+  - .circleci/config.yml added make clean
+  - Added test-compile with: LIBSO=1 GPU=0 CUDNN=0 OPENCV=0 -j 8
+  - Some fixes
+  - Fixed wait_stream flag, for compilation without GPU
+  - Update Readme.md
+  - Fixed tracking for OpenCV 3.x
+  - Fixed unused tracking for OpenCV 2.x
+  - Command line for example of usage DLL/SO
+  - Detection and Tracking work well
+  - Some stream fixes
+  - Tracking and Streaming fixed.
+  - Tracking fixed
+  - Fine tuning, use stopbackward=1 in the cfg-file in that layer where Backward should be stopped.
+  - Added CUDA-streams to Darknet-Yolo forward inference
+  - Merge branch 'master' of github.com:AlexeyAB/darknet
+  - Merge pull request #328 from Adesun/EOL
+  - #270 #325 fix windows format EOL handle. https://en.wikipedia.org/wiki/Newline
+  - Added object tracking using optical flow
+  - Update Readme.md
+  - Update Readme.md
+  - Update Readme.md
+  - Update Readme.md
+  - Update Readme.md - fixed typo
+  - Update Readme.md
+  - Update Readme.md
+  - Fixed for web-cam
+  - Update Readme.md
+  - Update Readme.md
+  - Validate and recall always with batch=1
+  - Update Readme.md
+  - Additional fixes
+  - Fixed for Linux: detection for batch > 1 and 0x0d at command line
+  - Fixed bug with: net->seen
+  - Use load_image_cv() on OpenCV 3.x
+  - Automatic opencv versioning
+  - yolo_console_dll.cpp OpenCV 3.3.0
+  - Fixed OpenCV usage in the yolo_console_dll.cpp
+  - Fixed fread() for net->seen
+  - Try to compile with CUDA and OpenCV
+  - Fixed Makefile for the CUDA 9.0
+  - CircleCI: compile with CUDA 9.0 and cuDNN 7
+  - Update Readme.md - CircleCI badge
+  - circleci: remove opencv
+  - circleci: opencv
+  - circleci: opencv
+  - Merge pull request #234 from bonzoq/master
+  - Fixed yolo_console_dll.cpp
+  - Fixed circleci
+  - circleci
+  - circleci: LIBSO=1
+  - circleci: fixed binary filename
+  - test
+  - Minor fix
+  - circleci
+  - Update README.md
+  - Fixed yolo_console_dll.cpp for RTMP protocol
+  - Added kmeansiou.c
+  - Update Readme.md
+  - Fixed of using backslash (\) in paths to cfg for training
+  - Added: densenet201_yolo.cfg and resnet50_yolo.cfg
+  - Fixed classifier for AlexNet and Resnet50
+  - Added densenet201_yolo.cfg
+  - Added classifier_darknet_448.cmd
+  - Update Readme.md
+  - Added classifier_densenet201.cmd
+  - Fixed yolo_console_dll.cpp
+  - Improved speed of yolo_console_dll.cpp - 40 FPS on 4K using GeForce GTX 960
+  - Colorized boxes.
+  - Improved speed of yolo_console_dll.cpp
+  - Fixed yolo_console_dll.cpp
+  - Show FPS and store result.avi video output in yolo_console_dll.cpp
+  - Fixed darknet/darknet_no_gpu.vcxproj
+  - Fixed yolo_cpp_dll_no_gpu.vcxproj for Debug x64
+  - Update Readme.md
+  - Remove from cmd-files the command for output videofile
+  - Update Readme.md
+  - Update Readme.md
+  - You can specify filename for output video by using -out_filename res.avi
+  - More usage rand_s()
+  - Small fix - reverted srand(time(0)) for rand()
+  - Some fixes
+  - Update Readme.md
+  - Update Readme.md
+  - Fixed Makefile
+  - Fixed STB
+  - Update Readme.md
+  - Track id fixed
+  - Fixed console app on Linux
+  - Fixed - use individual track_id for each class of object
+  - Latency fix for RTSP-camera in console-app
+  - Small fixes
+  - Added to Makefile the path to include of cuDNN
+  - Add tracking for image in example of usage SO/DLL
+  - Update Readme.md
+  - Added the ability to detect on multiple images using SO/DLL
+  - Added detection on images from the txt list file by using SO/DLL.
+  - Fixed speed of SO/DLL
+  - Changed example of DLL/SO usage to work faster
+  - LIBSO=1 compile darknet.so library on Linux
+  - Update Readme.md
+  - Linux supported
+  - fixed load image for OpenCV 3.0
+  - Update Readme.md
+  - cuDNN 6.0 supported. Also speed of console example improved.
+  - Update Readme.md
+  - Update Readme - OpenCV 3.0 or 2.4.13
+  - Supported OpenCV 3.0 and 2.4.13. Supported Windows and Linux.
+  - Update Readme.md - how to use Yolo9000
+  - Added cfg, labels, tree ... files for Yolo9000
+  - Fixed memory release
+  - Increased 2.3 times performance of Yolo on CPU by using OpenMP in both darknet_no_gpu and yolo_cpp_dll_no_gpu
+  - Fix that allows speedup usage of Yolo-DLL
+  - Fix Debug to compile DLL in yolo_cpp_dll.vcxproj and yolo_cpp_dll_no_gpu.vcxproj
+  - minor fix
+  - Memory leak fixed
+  - Un-commented the line to saving output video file.
+  - Increased speed for high res video 4K (3840 x 2026) 30-40 FPS.
+  - Update Readme.md
+  - For the console-app that uses DLL changed: MT-Debug-DLL (/MDd) to MT-DLL (/MD)
+  - Update Readme.md
+  - Update Readme.md
+  - Added DLL for CPU (without GPU) - yolo_cpp_dll_no_gpu.sln
+  - Update Readme.md
+  - Added old yolo-voc.2.0.cfg and yolo.2.0.cfg
+  - Merge pull request #72 from jasrk11/patch-1
+  - Added support for custom data with png image files
+  - Update Readme.md
+  - Fixed valid param in .data-file for - valid recall
+  - Update Readme.md
+  - Readme.md - fixed link to MSVS 2015 Community
+  - Update Readme.md
+  - Update Readme.md - test result VOC 2012
+  - tmp2
+  - tmp1
+  - Fixed cfg-files
+  - Updated cfg-files for new weights-files
+  - Added dir: results
+  - Update Readme.md - fix
+  - Implementation of tracking-function moved to cpp-file
+  - Update Readme.md - required cuDNN v5.1
+  - Added tracking: numerating the detected objects on video
+  - Fixed sequence of freeing memory.
+  - Fixed path to darknet_no_gpu.exe in darknet_no_gpu.vcxproj
+  - Fixed x & y coords less than 0
+  - Fixed memory leak in DLL, added load_image() & free_image(), added read_names_from_file()
+  - Update Readme.md - DLLs API
+  - Fix in bbox_t coords from (float) to (unsigned int)
+  - Small fix
+  - Update Readme.md - How to use Yolo as DLL
+  - Added support DLL (dynamic link library) - yolo_cpp_dll.dll
+  - Fixed training with rand_s()
+  - Update Readme.md
+  - Update Readme.md - How to improve object detection
+  - Fixed path to opencv vc12 .lib-files
+  - Update Readme.md
+  - Allows to use C++ code
+  - Fix multi-thread rand()
+  - Update Readme.md
+  - Readme.md - When should I stop training
+  - Fixed break point
+  - Update Readme.md
+  - Update Readme.md - PascalVOC data
+  - Update Readme.md
+  - Update Readme.md
+  - Update Readme.md
+  - Update Readme.md
+  - Both paths for OpenCV, first to vc14 and second to vc12
+  - Update Readme.md
+  - Fixed behavior if missing library cudnn.lib
+  - Fixed paths to OpenCV from vc12 to vc14
+  - Update Readme.md
+  - Fixed behavior if missing library cudnn.lib
+  - Update Readme.md - Custom object training
+  - fixed bug: rand() for batches of images
+  - Update Readme.md - pragma-libs in How to compile
+  - Update Readme.md - pragma-libs in How to compile
+  - Minor fix for pragma-lib
+  - Update Readme.md - Pareto frontier mAP-FPS
+  - Update Readme.md
+  - Update Readme.md - training for custom objects
+  - How to train with multi-GPU
+  - Update Readme.md - How to train with multi-GPU
+  - Update Readme.md - how to train on Pascal VOC
+  - Added: voc/voc_label.py
+  - backup dir
+  - Added: train_voc.cmd
+  - Update README.md: added example how to use web-cam
+  - Added example how to use web-cam: darknet/x64/darknet_web_cam_voc.cmd
+  - Added no-GPU solution file: darknet/darknet_no_gpu.sln
+  - Added no-GPU project file: darknet/darknet_no_gpu.vcxproj
+  - Fixed darknet.vcxproj - can be compiled in Debug-mode.
+  - Readme.md - store result to: test_dnn_out.avi
+  - Merge branch 'master' of github.com:AlexeyAB/darknet
+  - Added: store video output to file: test_dnn_out.avi
+  - Fix README.md
+  - Update Readme.md - fixed cfg/weights-descriptions
+  - Update Readme.md - updated command line examples
+  - Added coco.data and voc.data
+  - Fixed command line examples
+  - Fix: Can be compiled on MSVS 2013 (12.0.40629.00 update 5), but not on MSVS 2013 (12.0.21005.1)
+  - Added command line example of tiny-yolo-voc: darknet_demo_voc_tiny.cmd
+  - Merge branch 'master' of github.com:AlexeyAB/darknet
+  - Added: compute_52,sm_52
+  - Fixed Readme.md
+  - Update Readme.md
+  - Update Readme.md
+  - To Build on Windows - added: darknet.sln, darknet.vcxproj, pthreadVC2.dll, pthreadGC2.dll
+  - Sources fixed - Yolo v2 can be used on Windows (MSVS 2015 + CUDA 8.0)
+  - cheating a little here
+  - :psyduck:
+  - :fire: :metal: :fire:
+  - I really should stop changing names
+  - :crossed_swords: IS THIS NOT WHY YOU ARE HERE :crossed_swords:
+  - :fire: ARE YOU NOT ENTERTAINED :fire:
+  - :vegan: :charizard:
+  - less memory
+  - cpu batch norm works
+  - :fire: :fire: yolo v2 :fire: :fire:
+  - :charmander:
+  - :charmander:
+  - :fire: :fire: :dragonite:
+  - :charizard: :fire:
+  - hey
+  - :fire: crush. crush. admit. :fire:
+  - stuff and things
+  - :charizard: :charizard: :charizard:
+  - need the actual chars
+  - new font strategy
+  - ADAM
+  - tree things, tree stuff
+  - tree stuff
+  - fix bug thing
+  - not all airplanes
+  - alphabet
+  - So I have this new programming paradigm.......
+  - 22k dataset
+  - better multigpu
+  - good chance I didn't break anything
+  - giraffe
+  - adding coco models
+  - ok back
+  - and again
+  - slight changes to default demo settings
+  - adding new tiny-yolo
+  - Merge branch 'master' of github.com:pjreddie/darknet
+  - updates and things
+  - what do you even write here?
+  - some more stuff
+  - Update LICENSE
+  - updates
+  - idk
+  - colors
+  - better demo
+  - more demo stuff
+  - Merge branch 'master' of https://github.com/pjreddie/darknet
+  - hi
+  - other yool
+  - hi
+  - CVPR prep
+  - checkpoint
+  - t1
+  - yolo demo low latency
+  - no mean on input binarization
+  - hate warnings
+  - stuff
+  - hiding secret broken things
+  - some changes, fix opencv
+  - idk just in case
+  - stuff for carlo
+  - damnit alex
+  - example
+  - tactic script
+  - tactics
+  - hope i didn't break anything
+  - fixed
+  - art, cudnn
+  - not sure
+  - stable
+  - so much need to commit
+  - fixed old
+  - Makefile
+  - more go
+  - go updates
+  - defaults
+  - more bugs
+  - bugsssss
+  - I hate deepmind
+  - Play along w/ alphago
+  - Hi Harley
+  - Makefile
+  - cifar and go stuff
+  - color stable
+  - stuff
+  - fixed ko bug
+  - less printing
+  - weird int bug
+  - Go
+  - stuff
+  - binary reading weights
+  - generate
+  - more rnn stuff
+  - rnn stuff
+  - ...
+  - rnn cfg
+  - lots of stuff
+  - idk
+  - some fixes
+  - missing file
+  - shortcut layers, msr networks
+  - fixed darknet, stuff
+  - Faster batch normalization
+  - messed up darknet cfg
+  - rolling avg demo
+  - threshs are floats
+  - idk
+  - fixed label linking
+  - stuff
+  - stuff
+  - voc labels
+  - label images
+  - Some changes
+  - killed some warnings, cam control
+  - Fix for cuda 7.5
+  - some changes
+  - extraction conv layers
+  - Added tiny yolo model
+  - changed yolo-small
+  - added extraction
+  - ready for push?
+  - New YOLO
+  - CVPR Experiments
+  - lots of comparator stuff
+  - idk
+  - more writing fixes
+  - fixes to image
+  - more writing stuff
+  - save things sometimes
+  - hm
+  - resize image width 1 ><
+  - writing stuff
+  - idk man
+  - yolo working w/ regions
+  - stable
+  - lots of stuff
+  - Some bug fixes, random stuff
+  - changing data loading
+  - Fair comparison
+  - Added Darknet reference model
+  - single shot yolo training, separate file
+  - Should fix for OpenCV 3.0
+  - Need to keep GPU off by default
+  - Added dice code
+  - Merge branch 'master' of github.com:pjreddie/darknet
+  - Hacks to get nightmare to not break gridsizing
+  - Update README.md
+  - Headers are important
+  - Set default subdivisions to be larger
+  - Added COCO, fixed memory leaks
+  - small bug in forward_network_gpu
+  - Fixed some problems with visualizing networks
+  - Multiple GPUs instead of just sm_52
+  - Changes to make routing work better
+  - Switch to fast resize
+  - faster resize?
+  - Better partial function
+  - scripts and stuff
+  - changes to detection
+  - nothing changed go away
+  - nochange option in crop
+  - add avgpool layer
+  - Merge branch 'master' of github.com:pjreddie/darknet
+  - Small version of YOLO, ~1GB RAM
+  - Create README.md
+  - add license
+  - fix linking error on ubuntu
+  - small parser change
+  - normalization layer
+  - added jnet
+  - NIGHTMARE!!!!
+  - Added alexnet cfg
+  - small changes
+  - width and stuff
+  - pathing changes and stuff
+  - what happened?
+  - turn off gpu and opencv
+  - pathing
+  - inet label script
+  - new cfg files for classification
+  - testing on one image
+  - stuff
+  - imtest routine
+  - Better load messaging
+  - flush stdout
+  - detection prompt
+  - Merge branch 'master' of pjreddie.com:jnet
+  - NIPS demo
+  - NIPS demo
+  - NIPS
+  - sync issues
+  - syncing messed something up
+  - more detection stuff
+  - ?
+  - detection exp
+  - testing other losses
+  - something
+  - Fixed maxpool after change
+  - whoops!
+  - route handles input images well....ish
+  - forgot route layer
+  - stuff
+  - no idea
+  - i don't know what's going on anymore
+  - IOU loss function
+  - gonna fuck shit up
+  - It's time, to du-du-du-du-DU-DU-DUEL!! https://www.youtube.com/watch?v=IVmtUK_1jh4
+  - per image randomness in crop layer
+  - crop layer scaling and trans on cpu
+  - level adjustment for images
+  - probably stuff changed
+  - not much changed...
+  - rotation
+  - big change to images
+  - detection better?
+  - sqrt
+  - ..... and back to coords
+  - sides of box instead of coords
+  - no comment
+  - We do our OWN resizing!
+  - dropout probably ok
+  - Fixed im2col mistake >< face#palm
+  - smaller gridsize in bias
+  - stuff changed probably
+  - going to break stuff
+  - Subdivisions for batches
+  - using caffe's im2col, it's so much better\!
+  - gonna change im2col
+  - refactoring and added DARK ZONE
+  - renamed sigmoid to logistic
+  - detection layer fixed
+  - Split commands into different files
+  - going to split things up
+  - Big changes to detection
+  - captcha stuff
+  - Detection is back, baby\!
+  - Generalizing conv layer so deconv is easier
+  - doing some testing w/o rand
+  - saving weight files as binaries, hell yeah
+  - Stable place to commit
+  - idk, probably something changed
+  - New name: Darknet
+  - Bias updates bug fix
+  - CUDA so fast
+  - I am so done with opencl, switching to cuda
+  - fast sort of working
+  - Stable, needs to be way faster
+  - Faster
+  - Need to fix line reads
+  - some fixes, some other experiments
+  - 99 problems
+  - message
+  - working stuffs
+  - changed nist testing
+  - Not sure
+  - Small fixes
+  - lots of cleaning
+  - updates?
+  - fixed dropout ><
+  - Better imagenet distributed training
+  - timing code
+  - Fixed race condition in server
+  - mnist now
+  - Some fixes to momentum
+  - Distributed training
+  - Detection good, split up col images
+  - Starting on server/client
+  - stable
+  - cleaned up data parsing a lot. probably nothing broken?
+  - stable, dropout on gpu
+  - checkpoint
+  - Can validate on imagenet now
+  - col2im maybe a little faster
+  - im2col actually works now
+  - im2col slightly faster
+  - getting rid of sub_arrays, nvidia driver memory leak
+  - Maybe something changed?
+  - Maybe some stuff changed
+  - Fast, needs to be faster
+  - softmax on gpu
+  - Fixing up maxpool layer
+  - Refactored connected to use blas
+  - Convolutional working on GPU
+  - Trying some stuff w/ dropout
+  - Nist NIN testing multi-crop
+  - maxpool fixed, good on mnist
+  - probably how maxpool layers should be
+  - Merge branch 'master' of pjreddie.com:jnet
+  - Fixed batch stuff in conv layer
+  - Midway through lots of fixes, checkpoint
+  - Added batch to col2im, padding option
+  - Some small fixes for frame
+  - So there WAS this huge bug. Gone now
+  - Slowly refactoring and pushing to GPU
+  - Small updates
+  - GPU flag in Makefile
+  - Better alternating between video cards
+  - New feature extraction method
+  - Old feature extraction method
+  - Merge branch 'master' of pjreddie.com:jnet
+  - LRNorm layer, Viz, better cfg
+  - Visualizations?
+  - Attempt at visualizing ImageNet Features
+  - Better VOC handling and resizing
+  - Flipping features now a flag
+  - Merge branch 'master' of pjreddie.com:jnet
+  - Feature extraction using Imagenet
+  - Feature extraction using Imagenet
+  - Imagenet Features\!
+  - Single image feature extraction for VOC
+  - VOC Features Code complete?
+  - Extracting features from VOC with temp filters
+  - Training on VOC
+  - Convolutional layers working w/ matrices
+  - About to do something stupid...
+  - MNIST connected network showing off matrices
+  - Connected layers use matrices
+  - Stable on MNIST, about to change a lot
+  - CSE546 submission
+  - Ensemble
+  - New data format
+  - Works well on MNIST
+  - Working?
+  - Parsing, image loading, lots of stuff
+  - Loading may or may not work. But probably.
+  - Connected layers work forward and backward!
+  - First Commit!
+
