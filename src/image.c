@@ -312,6 +312,7 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     int selected_detections_num;
     detection_with_class* selected_detections = get_actual_detections(dets, num, thresh, &selected_detections_num, names);
 
+    printf("\n");
     // text output
     qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_lefts);
     int i;
@@ -333,8 +334,11 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
         }
     }
 
+    printf("\n");
     // image output
-    qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_probs);
+    // sort the result by the smallest to the highest (Ardi: NO NEED!)
+    // qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_probs);
+
     for (i = 0; i < selected_detections_num; ++i) {
             int width = im.h * .006;
             if (width < 1)
@@ -372,28 +376,29 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             if (top < 0) top = 0;
             if (bot > im.h - 1) bot = im.h - 1;
 
-            //int b_x_center = (left + right) / 2;
-            //int b_y_center = (top + bot) / 2;
-            //int b_width = right - left;
-            //int b_height = bot - top;
-            //sprintf(labelstr, "%d x %d - w: %d, h: %d", b_x_center, b_y_center, b_width, b_height);
+            int b_x_center = (left + right) / 2;
+            int b_y_center = (top + bot) / 2;
+            int b_width = right - left;
+            int b_height = bot - top;
+
+            printf("Label=%s; Center(x,y)=(%d x %d); w: %d, h: %d \n", names[selected_detections[i].best_class], b_x_center, b_y_center, b_width, b_height);
 
             // you should create directory: result_img
-            //static int copied_frame_id = -1;
-            //static image copy_img;
-            //if (copied_frame_id != frame_id) {
-            //    copied_frame_id = frame_id;
-            //    if (copy_img.data) free_image(copy_img);
-            //    copy_img = copy_image(im);
-            //}
-            //image cropped_im = crop_image(copy_img, left, top, right - left, bot - top);
-            //static int img_id = 0;
-            //img_id++;
-            //char image_name[1024];
-            //int best_class_id = selected_detections[i].best_class;
-            //sprintf(image_name, "result_img/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
-            //save_image(cropped_im, image_name);
-            //free_image(cropped_im);
+            static int copied_frame_id = -1;
+            static image copy_img;
+            if (copied_frame_id != frame_id) {
+                copied_frame_id = frame_id;
+                if (copy_img.data) free_image(copy_img);
+                copy_img = copy_image(im);
+            }
+            image cropped_im = crop_image(copy_img, left, top, right - left, bot - top);
+            static int img_id = 0;
+            img_id++;
+            char image_name[1024];
+            int best_class_id = selected_detections[i].best_class;
+            sprintf(image_name, "result_img/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
+            save_image(cropped_im, image_name);
+            free_image(cropped_im);
 
             if (im.c == 1) {
                 draw_box_width_bw(im, left, top, right, bot, width, 0.8);    // 1 channel Black-White
@@ -411,6 +416,10 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                         strcat(labelstr, names[j]);
                     }
                 }
+
+                // Ardi: try printing
+//                sprintf(labelstr, "%d x %d - w: %d, h: %d", b_x_center, b_y_center, b_width, b_height);
+
                 image label = get_label_v3(alphabet, labelstr, (im.h*.03));
                 draw_label(im, top + width, left, label, rgb);
                 free_image(label);
@@ -426,6 +435,7 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             }
     }
     free(selected_detections);
+    printf("\n");
 }
 
 void draw_detections(image im, int num, float thresh, box *boxes, float **probs, char **names, image **alphabet, int classes)
