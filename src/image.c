@@ -427,12 +427,18 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             img_id++;
             char image_name[1024];
             int best_class_id = selected_detections[i].best_class;
-            sprintf(image_name, "results/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
-            save_image(cropped_im, image_name);
-            free_image(cropped_im);
 
-            // Ardi: Drawing bounding boxes
+//            sprintf(image_name, "results/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
+//            save_image(cropped_im, image_name);
+//            free_image(cropped_im);
+
             if (is_recognized(names[selected_detections[i].best_class])){
+                // Ardi: save the detected object into a cropped image
+                sprintf(image_name, "results/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
+                save_image(cropped_im, image_name);
+                free_image(cropped_im);
+
+                // Ardi: Drawing bounding boxes
                 if (im.c == 1) {
                     draw_box_width_bw(im, left, top, right, bot, width, 0.8);    // 1 channel Black-White
                 }
