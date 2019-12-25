@@ -82,12 +82,17 @@ You can get cfg-files by path: `darknet/cfg/`
 
 ### Modifications
 
+* Script to run the testing:
+```
+./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output data/dog.jpg
+```
 * Modified `src/image.c` and add capabilities to:
     - [x] Extracting `top_x`, `top_y`, `w`, `h`, `center_x`, and `center_y` of each **detected object**.
-    - [ ] Calculating the `distance` between 2 **detected objects**. Let's assume that Dog=Flag and Bicycle=Person; try calculating the distance between Dog and Bicycle.
-        ```Let's assume that Dog=Flag and Bicycle=Person; try calculating the distance between Dog and Bicycle. ``` 
-    - [ ] Define the Threshold to remove bounding box of any Dog and Bicycle with `Distance(Dog, Bicycle) < Threshold`.
-    - [ ] Create a new bounding box of [Dog+Bicycle] as a single bounding box with label = "Dog_Bicycle" (Optional), re-calculating the variable of `top_x, top_y, w, h, center_x, center_y`.
+    - [ ] Preparing a dataset with outlier objects. e.g. `2 Bicycles with 1 Dog`, or `1 Bicycle with 2 Dog`. 
+    - [ ] Cluster Bicycle-Dog; where each cluster contain `overlapped between Bicycle and Dog`; Number of `K` is equal to `Max(Bicycle, Dog)`
+    - [ ] Calculate the distance of each pair of `Bicycle-Dog` 
+    - [ ] Set as Pair for `Bicycle-Dog` with the minimum distance. While others are defined as `outliers` and erase their bounding boxes.
+    - [ ] Create a new bounding box of [Dog+Bicycle] as a single bounding box with label = "Dog_Bicycle", by re-calculating the variable of `top_x, top_y, w, h, center_x, center_y`.
     
 ### Requirements
 

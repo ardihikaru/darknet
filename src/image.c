@@ -17,6 +17,14 @@
 #include "stb_image_write.h"
 #endif
 
+//Ardi
+#define MAX_LABEL 2
+#define MAX_STRING_SIZE 15
+
+typedef int bool;
+#define TRUE  1
+#define FALSE 0
+
 extern int check_mistakes;
 //int windows = 0;
 
@@ -304,10 +312,27 @@ int compare_by_probs(const void *a_ptr, const void *b_ptr) {
     return delta < 0 ? -1 : delta > 0 ? 1 : 0;
 }
 
+// Ardi: try capturing only recognized labels (recog_labels)
+bool is_recognized(char *detected_class){
+    char recog_labels[MAX_LABEL][MAX_STRING_SIZE] = {
+                         "bicycle", // as a person
+                         "dog" // as the flag
+                         };
+
+    for (int k = 0; k < MAX_LABEL; k++)
+    {
+        if(strcmp(detected_class, recog_labels[k]) == 0){
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 void draw_detections_v3(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, int ext_output)
 {
     static int frame_id = 0;
     frame_id++;
+
 
     int selected_detections_num;
     detection_with_class* selected_detections = get_actual_detections(dets, num, thresh, &selected_detections_num, names);
@@ -318,6 +343,10 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     int i;
     for (i = 0; i < selected_detections_num; ++i) {
         const int best_class = selected_detections[i].best_class;
+
+        // Ardi: try recognizing the detected object
+        is_recognized(names[best_class]);
+
         printf("%s: %.0f%%", names[best_class],    selected_detections[i].det.prob[best_class] * 100);
         if (ext_output)
             printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
@@ -326,6 +355,8 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 round(selected_detections[i].det.bbox.w*im.w), round(selected_detections[i].det.bbox.h*im.h));
         else
             printf("\n");
+
+
         int j;
         for (j = 0; j < classes; ++j) {
             if (selected_detections[i].det.prob[j] > thresh && j != best_class) {
@@ -396,34 +427,59 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             img_id++;
             char image_name[1024];
             int best_class_id = selected_detections[i].best_class;
-            sprintf(image_name, "result_img/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
+            sprintf(image_name, "results/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
             save_image(cropped_im, image_name);
             free_image(cropped_im);
 
-            if (im.c == 1) {
-                draw_box_width_bw(im, left, top, right, bot, width, 0.8);    // 1 channel Black-White
+            // Ardi: Drawing bounding boxes
+            if (is_recognized(names[selected_detections[i].best_class])){
+                if (im.c == 1) {
+                    draw_box_width_bw(im, left, top, right, bot, width, 0.8);    // 1 channel Black-White
+                }
+                else {
+                    draw_box_width(im, left, top, right, bot, width, red, green, blue); // 3 channels RGB
+                }
             }
-            else {
-                draw_box_width(im, left, top, right, bot, width, red, green, blue); // 3 channels RGB
-            }
+
+//            if (im.c == 1) {
+//                draw_box_width_bw(im, left, top, right, bot, width, 0.8);    // 1 channel Black-White
+//            }
+//            else {
+//                draw_box_width(im, left, top, right, bot, width, red, green, blue); // 3 channels RGB
+//            }
+
+            // Ardi: Drawing Label of each bounding box
             if (alphabet) {
                 char labelstr[4096] = { 0 };
                 strcat(labelstr, names[selected_detections[i].best_class]);
-                int j;
-                for (j = 0; j < classes; ++j) {
-                    if (selected_detections[i].det.prob[j] > thresh && j != selected_detections[i].best_class) {
-                        strcat(labelstr, ", ");
-                        strcat(labelstr, names[j]);
+
+                if (is_recognized(names[selected_detections[i].best_class])){
+                    int j;
+                    for (j = 0; j < classes; ++j) {
+                        if (selected_detections[i].det.prob[j] > thresh && j != selected_detections[i].best_class) {
+                            strcat(labelstr, ", ");
+                            strcat(labelstr, names[j]);
+                        }
                     }
+
+                    image label = get_label_v3(alphabet, labelstr, (im.h*.03));
+                    draw_label(im, top + width, left, label, rgb);
+                    free_image(label);
                 }
 
-                // Ardi: try printing
-//                sprintf(labelstr, "%d x %d - w: %d, h: %d", b_x_center, b_y_center, b_width, b_height);
-
-                image label = get_label_v3(alphabet, labelstr, (im.h*.03));
-                draw_label(im, top + width, left, label, rgb);
-                free_image(label);
+//                int j;
+//                for (j = 0; j < classes; ++j) {
+//                    if (selected_detections[i].det.prob[j] > thresh && j != selected_detections[i].best_class) {
+//                        strcat(labelstr, ", ");
+//                        strcat(labelstr, names[j]);
+//                    }
+//                }
+//
+//                image label = get_label_v3(alphabet, labelstr, (im.h*.03));
+//                draw_label(im, top + width, left, label, rgb);
+//                free_image(label);
             }
+            // Ardi: not used in our case
             if (selected_detections[i].det.mask) {
                 image mask = float_to_image(14, 14, 1, selected_detections[i].det.mask);
                 image resized_mask = resize_image(mask, b.w*im.w, b.h*im.h);
