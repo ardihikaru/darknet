@@ -10,7 +10,7 @@ More details: http://pjreddie.com/darknet/yolo/
 [![Contributors](https://img.shields.io/github/contributors/AlexeyAB/Darknet.svg)](https://github.com/AlexeyAB/darknet/graphs/contributors)
 [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](https://github.com/AlexeyAB/darknet/blob/master/LICENSE)  
 
-
+* [Personal Modification for Correlated Multi-Object Model Detection](#modifications)
 * [Requirements (and how to install dependecies)](#requirements)
 * [Pre-trained models](#pre-trained-models)
 * [Explanations in issues](https://github.com/AlexeyAB/darknet/issues?q=is%3Aopen+is%3Aissue+label%3AExplanations)
@@ -80,6 +80,15 @@ Put it near compiled: darknet.exe
 
 You can get cfg-files by path: `darknet/cfg/`
 
+### Modifications
+
+* Modified `src/image.c` and add capabilities to:
+    - [x] Extracting `top_x`, `top_y`, `w`, `h`, `center_x`, and `center_y` of each **detected object**.
+    - [ ] Calculating the `distance` between 2 **detected objects**. Let's assume that Dog=Flag and Bicycle=Person; try calculating the distance between Dog and Bicycle.
+        ```Let's assume that Dog=Flag and Bicycle=Person; try calculating the distance between Dog and Bicycle. ``` 
+    - [ ] Define the Threshold to remove bounding box of any Dog and Bicycle with `Distance(Dog, Bicycle) < Threshold`.
+    - [ ] Create a new bounding box of [Dog+Bicycle] as a single bounding box with label = "Dog_Bicycle" (Optional), re-calculating the variable of `top_x, top_y, w, h, center_x, center_y`.
+    
 ### Requirements
 
 * Windows or Linux
