@@ -3,7 +3,15 @@
 
 More details: http://pjreddie.com/darknet/yolo/
 
-
+## Ardihikaru Docs:
+1. Sample usage:
+```
+./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output data/others/
+```
+2. re-compile after any modification:
+```
+make
+```
 [![CircleCI](https://circleci.com/gh/AlexeyAB/darknet.svg?style=svg)](https://circleci.com/gh/AlexeyAB/darknet)
 [![TravisCI](https://travis-ci.org/AlexeyAB/darknet.svg?branch=master)](https://travis-ci.org/AlexeyAB/darknet)
 [![AppveyorCI](https://ci.appveyor.com/api/projects/status/594bwb5uoc1fxwiu/branch/master?svg=true)](https://ci.appveyor.com/project/AlexeyAB/darknet/branch/master)

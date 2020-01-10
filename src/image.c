@@ -18,7 +18,7 @@
 #endif
 
 //Ardi
-#define MAX_LABEL 2
+#define MAX_LABEL 3
 #define MAX_STRING_SIZE 15
 
 typedef int bool;
@@ -315,8 +315,9 @@ int compare_by_probs(const void *a_ptr, const void *b_ptr) {
 // Ardi: try capturing only recognized labels (recog_labels)
 bool is_recognized(char *detected_class){
     char recog_labels[MAX_LABEL][MAX_STRING_SIZE] = {
-                         "bicycle", // as a person
-                         "dog" // as the flag
+                         "kite",
+                         "umbrella",
+                         "person"
                          };
 
     for (int k = 0; k < MAX_LABEL; k++)
@@ -468,6 +469,11 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                         }
                     }
 
+                    if (strcmp ("kite", labelstr) == 0) {
+                        strcpy(labelstr, "flag");
+                    } else if (strcmp ("umbrella", labelstr) == 0) {
+                        strcpy(labelstr, "flag");
+                    }
                     image label = get_label_v3(alphabet, labelstr, (im.h*.03));
                     draw_label(im, top + width, left, label, rgb);
                     free_image(label);
