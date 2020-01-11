@@ -329,12 +329,47 @@ bool is_recognized(char *detected_class){
     return FALSE;
 }
 
-// Ardi: Collecting [person] label
-bool is_person(char *label_str){
-    if(strcmp(label_str, "person") == 0){
-        return TRUE;
+// Ardi: Get max between 2 int
+float max(float x1, float x2){
+    if (x1 > x2){
+        return x1;
+    }else{
+        return x2;
     }
-    return FALSE;
+}
+
+// Ardi: Get min between 2 int
+float min(float x1, float x2){
+    if (x1 < x2){
+        return x1;
+    }else{
+        return x2;
+    }
+}
+
+/**
+ * Check if two rectangles collide
+ * x_1, y_1, width_1, and height_1 define the boundaries of the first rectangle
+ * x_2, y_2, width_2, and height_2 define the boundaries of the second rectangle
+ */
+//bool rectangle_collision(float x_1, float y_1, float width_1, float height_1, float x_2, float y_2, float width_2, float height_2)
+//{
+//  return !(x_1 > x_2+width_2 || x_1+width_1 < x_2 || y_1 > y_2+height_2 || y_1+height_1 < y_2);
+//}
+
+// Ardi: #Generate two text boxes a larger one that covers them
+// this is a problem best solved by Non Maximum Suppression
+// one solution: https://stackoverflow.com/questions/35958415/merging-overlapping-rectangle-in-opencv
+//int ** merge_boxes(int box1[], int box2[]){
+//    return box1;
+////    return [min(box1[0], box2[0]),
+////         min(box1[1], box2[1]),
+////         max(box1[2], box2[2]),
+////         max(box1[3], box2[3])]
+//}
+
+void draw_merged_boxes(int box1[], int box2[]){
+    printf(" ### DRAWING here ..");
 }
 
 void draw_detections_v3(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, int ext_output)
@@ -346,10 +381,14 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     detection_with_class* selected_detections = get_actual_detections(dets, num, thresh, &selected_detections_num, names);
 
     int detected_persons_num = 0; // index of detected_persons
+    int detected_flags_num = 0; // index of detected_persons
+    int detected_tmp_flags_num = 0; // index of detected_persons
 
     // text output
     qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_lefts);
     detection_with_class detected_persons[selected_detections_num];
+    detection_with_class detected_flags[detected_flags_num];
+    detection_with_class tmp_detected_flags[detected_tmp_flags_num];
 
     // Ardi: Filter the detected objects
     // Please use image "11.jpg"
@@ -386,16 +425,148 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             || strcmp ("umbrella", label_str) == 0
         ){
             strcpy(names[selected_detections[p].best_class], "flag");
+            strcpy(label_str, "flag");
         }
 
         // Ardi: Collecting [person] labels
-        if (is_person(label_str)){
+        if(strcmp(label_str, "person") == 0){
             detected_persons[detected_persons_num] = selected_detections[k];
             detected_persons_num++;
         }
+
+        // Ardi: Collecting [flag] labels
+        if(strcmp(label_str, "flag") == 0){
+            detected_flags[detected_flags_num] = selected_detections[k];
+            detected_flags_num++;
+
+            tmp_detected_flags[detected_tmp_flags_num] = selected_detections[k];
+            detected_tmp_flags_num++;
+        }
     }
 
-//    printf(" >>> Total detected person = %d \n", detected_persons_num);
+    // Ardi: Find Flag which intersects with Person
+    // Source illustration:
+        // - https://stackoverflow.com/questions/11549966/c-calculate-area-between-two-rectangles
+        // - https://silentmatt.com/rectangle-intersection/
+//      (x1,y1)
+//    +------------+
+//    |            |
+//    |    (x3,y3) |
+//    |       +----------+
+//    |       |    |     |
+//    +-------|----+     |
+//            |  (x2,y2) |
+//            |          |
+//            +----------+
+//                     (x4,y4)
+    // Step - pretend that each person ONLY intersects with 1 flag!
+    // 1. For each person, find intersected flag; use this: https://stackoverflow.com/questions/13390333/two-rectangles-intersection
+    // 2. Once found, create merged version, then, deleted the tmp_detected_flags
+//    for (i = 0; i < selected_detections_num; ++i) {
+//        for (i = 0; i < selected_detections_num; ++i) {
+//
+//        }
+//    }
+
+    printf(" >>> Total detected person = %d \n", detected_persons_num);
+    printf(" >>> Total detected flags = %d \n", detected_flags_num);
+    printf(" >>> Total detected flags = %d \n", detected_tmp_flags_num);
+
+    // Ardi: Sample merging two bounding boxes
+//    int box1[4];
+//    float box1[4] = { 1, 2, 3, 4 };
+//    int box1[4] = { 1, 2, 3, 4 };
+    float box1[4] = {
+        round((selected_detections[0].det.bbox.x - selected_detections[0].det.bbox.w / 2)*im.w),
+        round((selected_detections[0].det.bbox.y - selected_detections[0].det.bbox.h / 2)*im.h),
+        round(selected_detections[0].det.bbox.w*im.w),
+        round(selected_detections[0].det.bbox.h*im.h)
+    };
+//    printf("KUCING ... \n\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
+//        box1[0], box1[1], box1[2], box1[3]);
+
+    float box1_x2 = box1[0] + box1[2];
+    float box1_y2 = box1[1] + box1[3];
+    box1[2] = box1_x2;
+    box1[3] = box1_y2;
+
+    printf("Transformed ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+        box1[0], box1[1], box1[2], box1[3]);
+
+    float box2[4] = {
+        round((selected_detections[1].det.bbox.x - selected_detections[1].det.bbox.w / 2)*im.w),
+        round((selected_detections[1].det.bbox.y - selected_detections[1].det.bbox.h / 2)*im.h),
+        round(selected_detections[1].det.bbox.w*im.w),
+        round(selected_detections[1].det.bbox.h*im.h)
+    };
+//    printf("KUCING ... \n\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
+//        box1[0], box1[1], box1[2], box1[3]);
+
+    float box2_x4 = box2[0] + box2[2];
+    float box2_y4 = box2[1] + box2[3];
+    box2[2] = box2_x4;
+    box2[3] = box2_y4;
+
+    printf("Transformed ... \n\t(left_x3: %4.0f   top_y3: %4.0f   right_x4: %4.0f   bot_y4: %4.0f)\n",
+        box2[0], box2[1], box2[2], box2[3]);
+
+    float new_bbox[4] = {
+        min(box1[0], box2[0]),
+        min(box1[1], box2[1]),
+        max(box1[2], box2[2]),
+        max(box1[3], box2[3])
+    };
+    float new_w = abs(new_bbox[0] - new_bbox[2]);
+    float new_h = abs(new_bbox[1] - new_bbox[3]);
+
+    printf("New B-Box ... \n\t(left_x: %4.0f   top_y: %4.0f   right_x: %4.0f   bot_y: %4.0f)\n",
+        new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3]);
+
+    printf("New B-Box V2 ... \n\t(left_x: %4.0f   top_y: %4.0f   w: %4.0f   h: %4.0f)\n",
+        new_bbox[0], new_bbox[1], new_w, new_h);
+
+    // Ardi: Mulai drawing ...
+    int width1 = im.h * .006;
+    if (width1 < 1)
+        width1 = 1;
+
+    int offset1 = selected_detections[0].best_class * 123457 % classes;
+    float red1 = get_color(2, offset1, classes);
+    float green1 = get_color(1, offset1, classes);
+    float blue1 = get_color(0, offset1, classes);
+    float rgb1[3];
+
+    rgb1[0] = red1;
+    rgb1[1] = green1;
+    rgb1[2] = blue1;
+
+//    int left = (b.x - b.w / 2.)*im.w;
+    int left1 = (new_bbox[0] - new_bbox[2] / 2.)*im.w;
+//    int right = (b.x + b.w / 2.)*im.w;
+    int right1 = (new_bbox[0] + new_bbox[2] / 2.)*im.w;
+//    int top = (b.y - b.h / 2.)*im.h;
+    int top1 = (new_bbox[1] - new_bbox[3] / 2.)*im.h;
+//    int bot = (b.y + b.h / 2.)*im.h;
+    int bot1 = (new_bbox[1] + new_bbox[3] / 2.)*im.h;
+
+    if (left1 < 0) left1 = 0;
+    if (right1 > im.w - 1) right1 = im.w - 1;
+    if (top1 < 0) top1 = 0;
+    if (bot1 > im.h - 1) bot1 = im.h - 1;
+
+//    int b_x_center = (left + right) / 2;
+//    int b_y_center = (top + bot) / 2;
+//    int b_width = right - left;
+//    int b_height = bot1 - top1;
+
+    printf(" ... HARUSNYA KELUAR GAN ...\n");
+//    draw_box_width(im, left1, top1, right1, bot1, width1, red1, green1, blue1); // 3 channels RGB
+    draw_box_width(im, new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3], width1, red1, green1, blue1); // 3 channels RGB
+    image label1 = get_label_v3(alphabet, "Person Flag", (im.h*.03));
+    draw_label(im, new_bbox[1] + width1, new_bbox[0], label1, rgb1);
+    printf(" SELESAI KELUARIN DEH ..\n");
+
+    /////////////////////////////// END Drawing Merged Bounding Boxes!
 
     printf("\n");
 
@@ -411,7 +582,8 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
                 round((selected_detections[i].det.bbox.x - selected_detections[i].det.bbox.w / 2)*im.w),
                 round((selected_detections[i].det.bbox.y - selected_detections[i].det.bbox.h / 2)*im.h),
-                round(selected_detections[i].det.bbox.w*im.w), round(selected_detections[i].det.bbox.h*im.h));
+                round(selected_detections[i].det.bbox.w*im.w),
+                round(selected_detections[i].det.bbox.h*im.h));
         else
             printf("\n");
 
@@ -471,8 +643,10 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             int b_width = right - left;
             int b_height = bot - top;
 
+//            printf("Label=%s; Center(x,y)=(%d x %d); x: %d, y: %d, w: %d, h: %d \n", names[selected_detections[i].best_class], b_x_center, b_y_center, b.x, b.y, , b_width, b_height);
             printf("Label=%s; Center(x,y)=(%d x %d); w: %d, h: %d \n", names[selected_detections[i].best_class], b_x_center, b_y_center, b_width, b_height);
 
+            // Ardi: Save cropped bounding boxes
             // you should create directory: result_img
             static int copied_frame_id = -1;
             static image copy_img;
@@ -497,7 +671,7 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 draw_box_width_bw(im, left, top, right, bot, width, 0.8);    // 1 channel Black-White
             }
             else {
-                draw_box_width(im, left, top, right, bot, width, red, green, blue); // 3 channels RGB
+//                draw_box_width(im, left, top, right, bot, width, red, green, blue); // 3 channels RGB
             }
 
             // Ardi: Drawing Label of each bounding box
@@ -514,7 +688,7 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 }
 
                 image label = get_label_v3(alphabet, label_str, (im.h*.03));
-                draw_label(im, top + width, left, label, rgb);
+//                draw_label(im, top + width, left, label, rgb);
                 free_image(label);
             }
             // Ardi: not used in our case
