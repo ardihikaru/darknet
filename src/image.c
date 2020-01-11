@@ -329,38 +329,6 @@ bool is_recognized(char *detected_class){
     return FALSE;
 }
 
-//void filter_detected_objects(char ***name, detection_with_class* *selected_detections){
-//void filter_detected_objects(char ***name, detection_with_class* selected_detections){
-void filter_detected_objects(char ***name, detection_with_class *selected_detections){
-    /* Copy next element value to current element */
-//    for(i=pos-1; i<size-1; i++)
-//    for(i=pos-1; i<sizeof(selected_detections)-1; i++)
-//    printf(" ****** Total bounding boxes = %d \n", sizeof(selected_detections);
-    int selected_detections_num;
-    int i;
-
-//    selected_detections_num = sizeof(*selected_detections);
-    selected_detections_num = sizeof(selected_detections);
-
-    printf(" ****** Total bounding boxes = %d \n", selected_detections_num);
-
-    for(i=0; i<selected_detections_num; i++)
-    {
-//        const int best_class = selected_detections[i].best_class;
-//        printf("%d ", *selected_detections[i]);
-//        printf(" >> harus e ok sih = %s \n", selected_detections[i].best_class);
-//        printf(selected_detections[i]);
-//        const int best_class = selected_detections[i].best_class;
-//        printf(" ****** %s: %.0f \n", names[best_class], selected_detections[i].det.prob[best_class] * 100);
-//        printf(" ****** %s:  \n", selected_detections[i]);
-//        printf(" ****** %s:  \n", selected_detections[i].best_class);
-//        printf(" ****** %s:  \n", names[best_class];
-//        selected_detections[i] = selected_detections[i + 1];
-    }
-    /* Decrement array size by 1 */
-//    size--;
-}
-
 void draw_detections_v3(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, int ext_output)
 {
     static int frame_id = 0;
@@ -373,8 +341,6 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_lefts);
 
     // Ardi: Filter the detected objects
-//    filter_detected_objects(&names, &selected_detections);
-    // Better to do the think HERE, instead of using function. LOL
     // Please use image "11.jpg"
     int k;
     for(k=0; k<sizeof(selected_detections); k++)
@@ -382,27 +348,19 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
         char labelstr[4096] = { 0 };
         strcat(labelstr, names[selected_detections[k].best_class]);
         const int best_class = selected_detections[k].best_class;
-//        printf(" ****** %s:  \n", names[best_class]);
         if( (strcmp ("umbrella", labelstr) == 0 && (selected_detections[k].det.prob[selected_detections[k].best_class] * 100) > 30)
             || (is_recognized(names[selected_detections[k].best_class])) == FALSE
         ){
-//            printf(" >>> FOUND!!! Deleting %s-%d @ index = %d\n", names[selected_detections[k].best_class], selected_detections[k].best_class, k);
-//            printf("OLD data = %s \n", names[selected_detections[k].best_class]);
-
             int j;
-//            for(j=k-1; j<selected_detections_num-1; j++){
             for(j=k; j<selected_detections_num; j++){
                 selected_detections[j] = selected_detections[j + 1];
             }
             selected_detections_num--;
-            printf("SHIFTED data = %s \n", names[selected_detections[k].best_class]);
-//            selected_detections[k] = selected_detections[k + 1];
-//            selected_detections_num--;
         }
         if (strcmp ("kite", labelstr) == 0
             || strcmp ("umbrella", labelstr) == 0
         ){
-            printf("Trying to change label from [%s] into [%s]\n", names[best_class], "flag");
+//            printf("Trying to change label from [%s] into [%s]\n", names[best_class], "flag");
             strcpy(names[best_class], "flag");
         }
 
@@ -498,25 +456,6 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             char image_name[1024];
             int best_class_id = selected_detections[i].best_class;
 
-//            sprintf(image_name, "results/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
-//            save_image(cropped_im, image_name);
-//            free_image(cropped_im);
-
-//            if (is_recognized(names[selected_detections[i].best_class])){
-//                // Ardi: save the detected object into a cropped image
-//                sprintf(image_name, "results/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
-//                save_image(cropped_im, image_name);
-//                free_image(cropped_im);
-//
-//                // Ardi: Drawing bounding boxes
-//                if (im.c == 1) {
-//                    draw_box_width_bw(im, left, top, right, bot, width, 0.8);    // 1 channel Black-White
-//                }
-//                else {
-//                    draw_box_width(im, left, top, right, bot, width, red, green, blue); // 3 channels RGB
-//                }
-//            }
-
             // Ardi: save the detected object into a cropped image
             sprintf(image_name, "results/img_%d_%d_%d_%s.jpg", frame_id, img_id, best_class_id, names[best_class_id]);
             save_image(cropped_im, image_name);
@@ -530,48 +469,10 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 draw_box_width(im, left, top, right, bot, width, red, green, blue); // 3 channels RGB
             }
 
-//            if (im.c == 1) {
-//                draw_box_width_bw(im, left, top, right, bot, width, 0.8);    // 1 channel Black-White
-//            }
-//            else {
-//                draw_box_width(im, left, top, right, bot, width, red, green, blue); // 3 channels RGB
-//            }
-
             // Ardi: Drawing Label of each bounding box
             if (alphabet) {
                 char labelstr[4096] = { 0 };
                 strcat(labelstr, names[selected_detections[i].best_class]);
-
-//                if (is_recognized(names[selected_detections[i].best_class])){
-//                    int j;
-//                    for (j = 0; j < classes; ++j) {
-//                        if (selected_detections[i].det.prob[j] > thresh && j != selected_detections[i].best_class) {
-//                            strcat(labelstr, ", ");
-//                            strcat(labelstr, names[j]);
-//                        }
-//                    }
-//
-//                    if (strcmp ("kite", labelstr) == 0) {
-//                        strcpy(labelstr, "flag");
-//                    } else if (strcmp ("umbrella", labelstr) == 0) {
-//                        strcpy(labelstr, "flag");
-//                    }
-//
-//                    // Ardi: This is simply used for image "11.jpg"; for testing purpose!
-////                    printf("Label=%s; Prob=%.2f \n", names[selected_detections[i].best_class], (selected_detections[i].det.prob[selected_detections[i].best_class] * 100));
-//                    if( strcmp ("umbrella", labelstr) == 0 && (selected_detections[i].det.prob[selected_detections[i].best_class] * 100) > 30 ){
-//                        // Nothing to do here.
-//                    }else{
-//                        image label = get_label_v3(alphabet, labelstr, (im.h*.03));
-//                        draw_label(im, top + width, left, label, rgb);
-//                        free_image(label);
-//                    }
-//
-//                    // Ardi: please use this instead!
-////                    image label = get_label_v3(alphabet, labelstr, (im.h*.03));
-////                    draw_label(im, top + width, left, label, rgb);
-////                    free_image(label);
-//                }
 
                 int j;
                 for (j = 0; j < classes; ++j) {
