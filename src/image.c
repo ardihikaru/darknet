@@ -368,8 +368,107 @@ float min(float x1, float x2){
 ////         max(box1[3], box2[3])]
 //}
 
-void draw_merged_boxes(int box1[], int box2[]){
-    printf(" ### DRAWING here ..");
+void draw_merged_boxes(image im, float new_bbox[], int best_class, int classes, char *merge_label, image **alphabet){
+//void draw_merged_boxes(image im, float new_bbox[], int best_class, int classes, char *merge_label,
+//                        image **alphabet, int frame_id){
+    int width1 = im.h * .006;
+    if (width1 < 1)
+        width1 = 1;
+
+    int offset1 = best_class * 123457 % classes;
+    float red1 = get_color(2, offset1, classes);
+    float green1 = get_color(1, offset1, classes);
+    float blue1 = get_color(0, offset1, classes);
+    float rgb1[3];
+
+    rgb1[0] = red1;
+    rgb1[1] = green1;
+    rgb1[2] = blue1;
+
+    int left1 = (new_bbox[0] - new_bbox[2] / 2.)*im.w;
+    int right1 = (new_bbox[0] + new_bbox[2] / 2.)*im.w;
+    int top1 = (new_bbox[1] - new_bbox[3] / 2.)*im.h;
+    int bot1 = (new_bbox[1] + new_bbox[3] / 2.)*im.h;
+
+    if (left1 < 0) left1 = 0;
+    if (right1 > im.w - 1) right1 = im.w - 1;
+    if (top1 < 0) top1 = 0;
+    if (bot1 > im.h - 1) bot1 = im.h - 1;
+
+//    save_merged_bbox(im, left1, top1, right1, bot1, best_class, frame_id);
+//    save_merged_bbox(im, left1, top1, right1, bot1, best_class, merge_label);
+
+//    float new_w = abs(new_bbox[0] - new_bbox[2]);
+//    float new_h = abs(new_bbox[1] - new_bbox[3]);
+
+//    printf(" ## New B-Box V2 ... \n\t(left_x: %4.0f   top_y: %4.0f   w: %4.0f   h: %4.0f)\n",
+//        new_bbox[0], new_bbox[1], new_w, new_h);
+
+    draw_box_width(im, new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3], width1, red1, green1, blue1); // 3 channels RGB
+    image label1 = get_label_v3(alphabet, merge_label, (im.h*.03));
+    draw_label(im, new_bbox[1] + width1, new_bbox[0], label1, rgb1);
+}
+//
+////void save_merged_bbox(image im, float left, float top, float right, float bot, int best_class_id, int frame_id, char *merge_label){
+//void save_merged_bbox(image im, float left, float top, float right, float bot, int best_class_id, int frame_id){
+//    // Ardi: Save cropped bounding boxes
+//    // you should create directory: result_img
+//    printf(" >> // Ardi: Save cropped bounding boxes ... \n");
+//
+//    printf(" ## New B-Box V2 ... \n\t(left_x: %4.0f   top_y: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+//        left, top, right, bot);
+//
+//    static int copied_frame_id = -1;
+//    static image copy_img;
+//    if (copied_frame_id != frame_id) {
+//        copied_frame_id = frame_id;
+//        if (copy_img.data) free_image(copy_img);
+//            copy_img = copy_image(im);
+//        }
+//    image cropped_im = crop_image(copy_img, left, top, right - left, bot - top);
+////    static int img_id = 0;
+////     img_id++;
+//    char image_name[1024];
+////    int best_class_id = selected_detections[i].best_class;
+//
+//    // Ardi: save the detected object into a cropped image
+//    sprintf(image_name, "results/img_%d_%d_Person-Flag.jpg", frame_id, best_class_id);
+//    printf(" >>>> image_name = %s \n", image_name);
+//    save_image(cropped_im, image_name);
+//    free_image(cropped_im);
+//}
+
+void verifying_intersection(float box1_x1, float box1_y1, float box1_w, float box1_h,
+            float box2_x1, float box2_y1, float box2_w, float box2_h,
+            image im, int best_class, int classes, char *merge_label, image **alphabet){
+//            image *im, int best_class, int classes, char *merge_label, image **alphabet,
+//            int frame_id){
+//    float new_w = abs(new_bbox[0] - new_bbox[2]);
+//    float new_h = abs(new_bbox[1] - new_bbox[3]);
+
+    // Ardi: Convert {x,y,w,h} into {x1,y1,x2,y2}
+    float box1_x2 = box1_x1 + box1_w;
+    float box1_y2 = box1_y1 + box1_h;
+    float box2_x2 = box2_x1 + box2_w;
+    float box2_y2 = box2_y1 + box2_h;
+
+    printf("### Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+        box1_x1, box1_y1, box1_x2, box1_y2);
+
+    printf("### Box_02 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+        box2_x1, box2_y1, box2_x2, box2_y2);
+
+    // Ardi: Check whether intersection happens or not?
+
+    // Ardi: Got intersectio! Begin merging & Drawing merged bounding boxed
+    float new_bbox[4] = {
+        min(box1_x1, box1_x1),
+        min(box1_y1, box2_y1),
+        max(box1_x2, box2_x2),
+        max(box1_y2, box2_y2)
+    };
+//    draw_merged_boxes(im, new_bbox, best_class, classes, "Person Flag", alphabet, frame_id);
+    draw_merged_boxes(im, new_bbox, best_class, classes, "Person Flag", alphabet);
 }
 
 void draw_detections_v3(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, int ext_output)
@@ -468,103 +567,71 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 //        }
 //    }
 
-    printf(" >>> Total detected person = %d \n", detected_persons_num);
-    printf(" >>> Total detected flags = %d \n", detected_flags_num);
-    printf(" >>> Total detected flags = %d \n", detected_tmp_flags_num);
+//    printf(" >>> Total detected person = %d \n", detected_persons_num);
+//    printf(" >>> Total detected flags = %d \n", detected_flags_num);
+//    printf(" >>> Total detected flags = %d \n", detected_tmp_flags_num);
 
     // Ardi: Sample merging two bounding boxes
-//    int box1[4];
-//    float box1[4] = { 1, 2, 3, 4 };
-//    int box1[4] = { 1, 2, 3, 4 };
-    float box1[4] = {
+    verifying_intersection(
         round((selected_detections[0].det.bbox.x - selected_detections[0].det.bbox.w / 2)*im.w),
         round((selected_detections[0].det.bbox.y - selected_detections[0].det.bbox.h / 2)*im.h),
         round(selected_detections[0].det.bbox.w*im.w),
-        round(selected_detections[0].det.bbox.h*im.h)
-    };
-//    printf("KUCING ... \n\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
-//        box1[0], box1[1], box1[2], box1[3]);
+        round(selected_detections[0].det.bbox.h*im.h),
 
-    float box1_x2 = box1[0] + box1[2];
-    float box1_y2 = box1[1] + box1[3];
-    box1[2] = box1_x2;
-    box1[3] = box1_y2;
-
-    printf("Transformed ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-        box1[0], box1[1], box1[2], box1[3]);
-
-    float box2[4] = {
         round((selected_detections[1].det.bbox.x - selected_detections[1].det.bbox.w / 2)*im.w),
         round((selected_detections[1].det.bbox.y - selected_detections[1].det.bbox.h / 2)*im.h),
         round(selected_detections[1].det.bbox.w*im.w),
-        round(selected_detections[1].det.bbox.h*im.h)
-    };
+        round(selected_detections[1].det.bbox.h*im.h),
+
+        im, selected_detections[0].best_class, classes, "Person Flag", alphabet
+//        im, selected_detections[0].best_class, classes, "Person_Flag", alphabet,
+//        frame_id
+    );
+
+//    float box1[4] = {
+//        round((selected_detections[0].det.bbox.x - selected_detections[0].det.bbox.w / 2)*im.w),
+//        round((selected_detections[0].det.bbox.y - selected_detections[0].det.bbox.h / 2)*im.h),
+//        round(selected_detections[0].det.bbox.w*im.w),
+//        round(selected_detections[0].det.bbox.h*im.h)
+//    };
+//
+//    box1[2] = box1[0] + box1[2];
+//    box1[3] = box1[1] + box1[3];
+//
+//    printf("Transformed ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+//        box1[0], box1[1], box1[2], box1[3]);
+//
+//    float box2[4] = {
+//        round((selected_detections[1].det.bbox.x - selected_detections[1].det.bbox.w / 2)*im.w),
+//        round((selected_detections[1].det.bbox.y - selected_detections[1].det.bbox.h / 2)*im.h),
+//        round(selected_detections[1].det.bbox.w*im.w),
+//        round(selected_detections[1].det.bbox.h*im.h)
+//    };
 //    printf("KUCING ... \n\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
 //        box1[0], box1[1], box1[2], box1[3]);
 
-    float box2_x4 = box2[0] + box2[2];
-    float box2_y4 = box2[1] + box2[3];
-    box2[2] = box2_x4;
-    box2[3] = box2_y4;
+//    box2[2] = box2[0] + box2[2];
+//    box2[3] = box2[1] + box2[3];
+//    printf("Transformed ... \n\t(left_x3: %4.0f   top_y3: %4.0f   right_x4: %4.0f   bot_y4: %4.0f)\n",
+//        box2[0], box2[1], box2[2], box2[3]);
 
-    printf("Transformed ... \n\t(left_x3: %4.0f   top_y3: %4.0f   right_x4: %4.0f   bot_y4: %4.0f)\n",
-        box2[0], box2[1], box2[2], box2[3]);
+//    float new_bbox[4] = {
+//        min(box1[0], box2[0]),
+//        min(box1[1], box2[1]),
+//        max(box1[2], box2[2]),
+//        max(box1[3], box2[3])
+//    };
+//    float new_w = abs(new_bbox[0] - new_bbox[2]);
+//    float new_h = abs(new_bbox[1] - new_bbox[3]);
 
-    float new_bbox[4] = {
-        min(box1[0], box2[0]),
-        min(box1[1], box2[1]),
-        max(box1[2], box2[2]),
-        max(box1[3], box2[3])
-    };
-    float new_w = abs(new_bbox[0] - new_bbox[2]);
-    float new_h = abs(new_bbox[1] - new_bbox[3]);
+//    printf("New B-Box ... \n\t(left_x: %4.0f   top_y: %4.0f   right_x: %4.0f   bot_y: %4.0f)\n",
+//        new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3]);
 
-    printf("New B-Box ... \n\t(left_x: %4.0f   top_y: %4.0f   right_x: %4.0f   bot_y: %4.0f)\n",
-        new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3]);
-
-    printf("New B-Box V2 ... \n\t(left_x: %4.0f   top_y: %4.0f   w: %4.0f   h: %4.0f)\n",
-        new_bbox[0], new_bbox[1], new_w, new_h);
+//    printf("New B-Box V2 ... \n\t(left_x: %4.0f   top_y: %4.0f   w: %4.0f   h: %4.0f)\n",
+//        new_bbox[0], new_bbox[1], new_w, new_h);
 
     // Ardi: Mulai drawing ...
-    int width1 = im.h * .006;
-    if (width1 < 1)
-        width1 = 1;
-
-    int offset1 = selected_detections[0].best_class * 123457 % classes;
-    float red1 = get_color(2, offset1, classes);
-    float green1 = get_color(1, offset1, classes);
-    float blue1 = get_color(0, offset1, classes);
-    float rgb1[3];
-
-    rgb1[0] = red1;
-    rgb1[1] = green1;
-    rgb1[2] = blue1;
-
-//    int left = (b.x - b.w / 2.)*im.w;
-    int left1 = (new_bbox[0] - new_bbox[2] / 2.)*im.w;
-//    int right = (b.x + b.w / 2.)*im.w;
-    int right1 = (new_bbox[0] + new_bbox[2] / 2.)*im.w;
-//    int top = (b.y - b.h / 2.)*im.h;
-    int top1 = (new_bbox[1] - new_bbox[3] / 2.)*im.h;
-//    int bot = (b.y + b.h / 2.)*im.h;
-    int bot1 = (new_bbox[1] + new_bbox[3] / 2.)*im.h;
-
-    if (left1 < 0) left1 = 0;
-    if (right1 > im.w - 1) right1 = im.w - 1;
-    if (top1 < 0) top1 = 0;
-    if (bot1 > im.h - 1) bot1 = im.h - 1;
-
-//    int b_x_center = (left + right) / 2;
-//    int b_y_center = (top + bot) / 2;
-//    int b_width = right - left;
-//    int b_height = bot1 - top1;
-
-    printf(" ... HARUSNYA KELUAR GAN ...\n");
-//    draw_box_width(im, left1, top1, right1, bot1, width1, red1, green1, blue1); // 3 channels RGB
-    draw_box_width(im, new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3], width1, red1, green1, blue1); // 3 channels RGB
-    image label1 = get_label_v3(alphabet, "Person Flag", (im.h*.03));
-    draw_label(im, new_bbox[1] + width1, new_bbox[0], label1, rgb1);
-    printf(" SELESAI KELUARIN DEH ..\n");
+//    draw_merged_boxes(im, new_bbox, selected_detections[0].best_class, classes, "Person Flag", alphabet);
 
     /////////////////////////////// END Drawing Merged Bounding Boxes!
 
