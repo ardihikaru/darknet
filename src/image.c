@@ -329,6 +329,14 @@ bool is_recognized(char *detected_class){
     return FALSE;
 }
 
+// Ardi: Collecting [person] label
+bool is_person(char *label_str){
+    if(strcmp(label_str, "person") == 0){
+        return TRUE;
+    }
+    return FALSE;
+}
+
 void draw_detections_v3(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, int ext_output)
 {
     static int frame_id = 0;
@@ -337,18 +345,23 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     int selected_detections_num;
     detection_with_class* selected_detections = get_actual_detections(dets, num, thresh, &selected_detections_num, names);
 
+    int detected_persons_num = 0; // index of detected_persons
+
     // text output
     qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_lefts);
+    detection_with_class detected_persons[selected_detections_num];
 
     // Ardi: Filter the detected objects
     // Please use image "11.jpg"
+    // For dummy use case only!
     int k;
     for(k=0; k<sizeof(selected_detections); k++)
     {
-        char labelstr[4096] = { 0 };
-        strcat(labelstr, names[selected_detections[k].best_class]);
-        const int best_class = selected_detections[k].best_class;
-        if( (strcmp ("umbrella", labelstr) == 0 && (selected_detections[k].det.prob[selected_detections[k].best_class] * 100) > 30)
+        char label_str[4096] = { 0 };
+        strcat(label_str, names[selected_detections[k].best_class]);
+
+        // Ardi: removing any un-wanted bounding boxes
+        if( (strcmp ("umbrella", label_str) == 0 && (selected_detections[k].det.prob[selected_detections[k].best_class] * 100) > 30)
             || (is_recognized(names[selected_detections[k].best_class])) == FALSE
         ){
             int j;
@@ -357,15 +370,33 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             }
             selected_detections_num--;
         }
-        if (strcmp ("kite", labelstr) == 0
-            || strcmp ("umbrella", labelstr) == 0
-        ){
-//            printf("Trying to change label from [%s] into [%s]\n", names[best_class], "flag");
-            strcpy(names[best_class], "flag");
-        }
 
     }
-    printf("selected_detections_num NEW = %d \n", selected_detections_num);
+
+    // Ardi: Modifications
+    // For dummy use case only!
+    int p;
+    for(p=0; p<selected_detections_num; p++)
+    {
+        char label_str[4096] = { 0 };
+        strcat(label_str, names[selected_detections[p].best_class]);
+
+        // Ardi: renaming labels
+        if (strcmp ("kite", label_str) == 0
+            || strcmp ("umbrella", label_str) == 0
+        ){
+            strcpy(names[selected_detections[p].best_class], "flag");
+        }
+
+        // Ardi: Collecting [person] labels
+        if (is_person(label_str)){
+            detected_persons[detected_persons_num] = selected_detections[k];
+            detected_persons_num++;
+        }
+    }
+
+//    printf(" >>> Total detected person = %d \n", detected_persons_num);
+
     printf("\n");
 
     int i;
@@ -471,18 +502,18 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 
             // Ardi: Drawing Label of each bounding box
             if (alphabet) {
-                char labelstr[4096] = { 0 };
-                strcat(labelstr, names[selected_detections[i].best_class]);
+                char label_str[4096] = { 0 };
+                strcat(label_str, names[selected_detections[i].best_class]);
 
                 int j;
                 for (j = 0; j < classes; ++j) {
                     if (selected_detections[i].det.prob[j] > thresh && j != selected_detections[i].best_class) {
-                        strcat(labelstr, ", ");
-                        strcat(labelstr, names[j]);
+                        strcat(label_str, ", ");
+                        strcat(label_str, names[j]);
                     }
                 }
 
-                image label = get_label_v3(alphabet, labelstr, (im.h*.03));
+                image label = get_label_v3(alphabet, label_str, (im.h*.03));
                 draw_label(im, top + width, left, label, rgb);
                 free_image(label);
             }
