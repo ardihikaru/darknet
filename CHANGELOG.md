@@ -1,3 +1,7 @@
+## 1.1.1 (一月 13, 2020)
+  - update readme
+  - Merge branch 'release-1.1' into feature/5g-dive/aerial-img
+
 ## 1.1.0 (一月 13, 2020)
   - bug fixed due to git ignored: missing data/coco.names
   - Merge branch 'release-1.0' into feature/5g-dive/aerial-img
