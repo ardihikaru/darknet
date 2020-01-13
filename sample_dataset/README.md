@@ -2,7 +2,6 @@
 
 #### Scenario #01
 - Dataset image: `00.jpg`
-- Git Branch: `feature/5g-dive/uc01` ([Link](https://github.com/ardihikaru/darknet/tree/feature/5g-dive/uc01))
 - Recognized objects
     - `Number of person`: 1
     - `Number of flag`: 1
