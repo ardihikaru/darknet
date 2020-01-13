@@ -1,3 +1,17 @@
+## 1.0 (一月 13, 2020)
+  - corrected scenario link
+  - finished initial scenario
+  - on going: refactor code for saving merged bounding boxes
+  - done single merged bounding boxes
+  - bug fixed
+  - refactor codes
+  - finished setup dummy dataset
+  - modified image.c
+  - updates: - ONLY generate cropped images of the recognized labels.
+  - updates: - modified readme: add development targets in bullet points. - modified image.c: only draw bounding-box of recognized labels(var="recog_labels")
+  - added progress bullet points
+  - updates: - modified ./src/image.c to enable image cropping and extract x, y, w, h, center_x, center_y
+
 ## 0.1.0 (十二月 23, 2019)
   - added bump-version.sh for easier versioning
   - Fixed strech_sway=1 param, local_avgpool for large size
