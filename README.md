@@ -3,6 +3,16 @@
 
 More details: http://pjreddie.com/darknet/yolo/
 
+## Ardihikaru Docs:
+- Sample usage:
+```
+./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output data/others/
+```
+- re-compile after any modification:
+```
+make
+```
+- Scenario Development: Please go [here](https://github.com/ardihikaru/darknet/tree/v1.0/sample_dataset)
 
 [![CircleCI](https://circleci.com/gh/AlexeyAB/darknet.svg?style=svg)](https://circleci.com/gh/AlexeyAB/darknet)
 [![TravisCI](https://travis-ci.org/AlexeyAB/darknet.svg?branch=master)](https://travis-ci.org/AlexeyAB/darknet)
@@ -10,7 +20,7 @@ More details: http://pjreddie.com/darknet/yolo/
 [![Contributors](https://img.shields.io/github/contributors/AlexeyAB/Darknet.svg)](https://github.com/AlexeyAB/darknet/graphs/contributors)
 [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](https://github.com/AlexeyAB/darknet/blob/master/LICENSE)  
 
-
+* [Personal Modification for Correlated Multi-Object Model Detection](#modifications)
 * [Requirements (and how to install dependecies)](#requirements)
 * [Pre-trained models](#pre-trained-models)
 * [Explanations in issues](https://github.com/AlexeyAB/darknet/issues?q=is%3Aopen+is%3Aissue+label%3AExplanations)
@@ -80,6 +90,20 @@ Put it near compiled: darknet.exe
 
 You can get cfg-files by path: `darknet/cfg/`
 
+### Modifications
+
+* Script to run the testing:
+```
+./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output data/dog.jpg
+```
+* Modified `src/image.c` and add capabilities to:
+    - [x] Extracting `top_x`, `top_y`, `w`, `h`, `center_x`, and `center_y` of each **detected object**.
+    - [ ] Preparing a dataset with outlier objects. e.g. `2 Bicycles with 1 Dog`, or `1 Bicycle with 2 Dog`. 
+    - [ ] Cluster Bicycle-Dog; where each cluster contain `overlapped between Bicycle and Dog`; Number of `K` is equal to `Max(Bicycle, Dog)`
+    - [ ] Calculate the distance of each pair of `Bicycle-Dog` 
+    - [ ] Set as Pair for `Bicycle-Dog` with the minimum distance. While others are defined as `outliers` and erase their bounding boxes.
+    - [ ] Create a new bounding box of [Dog+Bicycle] as a single bounding box with label = "Dog_Bicycle", by re-calculating the variable of `top_x, top_y, w, h, center_x, center_y`.
+    
 ### Requirements
 
 * Windows or Linux
