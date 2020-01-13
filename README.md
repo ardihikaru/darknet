@@ -12,7 +12,7 @@ More details: http://pjreddie.com/darknet/yolo/
 ```
 make
 ```
-- Scenario Development: Please go [here](https://github.com/ardihikaru/darknet/tree/v1.0/sample_dataset)
+- Scenario Development: Please go [here](https://github.com/ardihikaru/darknet/tree/v1.1.1/sample_dataset)
 
 [![CircleCI](https://circleci.com/gh/AlexeyAB/darknet.svg?style=svg)](https://circleci.com/gh/AlexeyAB/darknet)
 [![TravisCI](https://travis-ci.org/AlexeyAB/darknet.svg?branch=master)](https://travis-ci.org/AlexeyAB/darknet)
