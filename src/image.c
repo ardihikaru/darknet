@@ -25,8 +25,19 @@ typedef int bool;
 #define TRUE  1
 #define FALSE 0
 
+#define IMG_DUMMY 0 // set 1 if trying to use image "11.jpg"; default 0;
+
 #define RATIO_W 0.3
-#define RATIO_H 0.55
+#define RATIO_H 0.35
+
+// Use image "11.jpg" and parameter below,
+// to demonstrate multiple intersection of flags with single person
+//#define RATIO_W 0.45
+//#define RATIO_H 0.4
+
+// Use for image "10.jpg"
+//#define RATIO_W 0.45
+//#define RATIO_H 0.4
 
 extern int check_mistakes;
 //int windows = 0;
@@ -558,23 +569,37 @@ bool verifying_intersection(float box1_x1, float box1_y1, float box1_w, float bo
     float box2_x2 = box2_x1 + box2_w;
     float box2_y2 = box2_y1 + box2_h;
 
-    printf("### [AWAL] Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-        box1_x1, box1_y1, box1_x2, box1_y2);
+//    printf("### [AWAL] Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+//        box1_x1, box1_y1, box1_x2, box1_y2);
 
     // Ardi: Only enlarge BBox of the Person
     if (is_enlarged){
-        printf(" >>>>> IYA INI PROSES ENLARGING !!");
-        box1_x1 = box1_x1 - (box1_x1 * RATIO_W);
-        box1_y1 = box1_y1 - (box1_y1 * RATIO_H);
-        box1_x2 = box1_x2 + (box1_x2 * RATIO_W);
-        box1_y2 = box1_y2 + (box1_y2 * RATIO_H);
+        printf(" >>>>> IYA INI PROSES ENLARGING !!\n");
+
+        // Ardi: Use this information to resize the bounding box
+        int b_width = box1_x2 - box1_x1;
+        int b_height = box1_y2 - box1_y1;
+        int resized_w = b_width * RATIO_W;
+        int resized_h = b_height * RATIO_H;
+
+//            // Ardi: Demo enlarging bounding box
+//            left = left - resized_w;
+//            top = top - resized_h;
+//            right = right + resized_w;
+//            bot = bot + resized_h;
+
+        box1_x1 = box1_x1 - resized_w;
+        box1_y1 = box1_y1 - resized_h;
+        box1_x2 = box1_x2 + resized_w;
+        box1_y2 = box1_y2 + resized_h;
 
         if (box1_x1 < 0) box1_x1 = 0;
         if (box1_y1 > im_w - 1) box1_y1 = im_w - 1;
         if (box1_x2 < 0) box1_x2 = 0;
         if (box1_y2 > im_h - 1) box1_y2 = im_h - 1;
 
-
+        int b2_width = box2_x2 - box2_x1;
+        int b2_height = box2_y2 - box2_y1;
 //        box2_x1 = box2_x1 - (box2_x1 * RATIO_W);
 //        box2_y1 = box2_y1 - (box2_y1 * RATIO_H);
 //        box2_x2 = box2_x2 + (box2_x2 * RATIO_W);
@@ -584,13 +609,20 @@ bool verifying_intersection(float box1_x1, float box1_y1, float box1_w, float bo
 //        if (box1_y1 > im_w - 1) box1_y1 = im_w - 1;
 //        if (box1_x2 < 0) box1_x2 = 0;
 //        if (box1_y2 > im_h - 1) box1_y2 = im_h - 1;
+
+        printf("## Box-01: height: %d px; width: %d px; top: %4.0f px; left: %4.0f px;\n",
+            b_width, b_height, box1_y1, box1_x1);
+
+        printf("## Box-02: height: %d px; width: %d px; top: %4.0f px; left: %4.0f px;\n",
+            b2_width, b2_height, box1_y2, box2_x1);
+
     }
 
-    printf("### Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-        box1_x1, box1_y1, box1_x2, box1_y2);
+//    printf("### Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+//        box1_x1, box1_y1, box1_x2, box1_y2);
 
-    printf("### Box_02 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-        box2_x1, box2_y1, box2_x2, box2_y2);
+//    printf("### Box_02 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+//        box2_x1, box2_y1, box2_x2, box2_y2);
 
     // Ardi: Check whether intersection happens or not?
     return is_intersect(box1_x1, box1_y1, box1_x2, box1_y2,
@@ -620,34 +652,31 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 //    int best_class_flags[detected_flags_num];
 
 
-    ///////////////////////////// Filter the detected objects: Only for image "00.jpg" ///////////////////////////////////
+    ///////////////////////////// Filter the detected objects: Only for image "11.jpg" ///////////////////////////////////
 
-//    // Ardi: Filter the detected objects
-//    // Please use image "11.jpg"
-//    // For dummy use case only!
-//    int k;
-//    for(k=0; k<sizeof(selected_detections); k++)
-//    {
-//        char label_str[4096] = { 0 };
-//        strcat(label_str, names[selected_detections[k].best_class]);
-//
-//        printf(" #### label_str = %s \n", label_str);
-//        printf(" #### best_class = %d \n", is_recognized(names[selected_detections[k].best_class]));
-//
-//        // Ardi: removing any un-wanted bounding boxes
-////        if( (strcmp ("umbrella", label_str) == 0 && (selected_detections[k].det.prob[selected_detections[k].best_class] * 100) > 30)
-//        if( (strcmp ("kite", label_str) == 0)
-//            || (is_recognized(names[selected_detections[k].best_class])) == FALSE
-//        ){
-//            printf(" ... MASUK IF!");
-//            int j;
-//            for(j=k; j<selected_detections_num; j++){
-//                selected_detections[j] = selected_detections[j + 1];
-//            }
-//            selected_detections_num--;
-//        }
-//
-//    }
+    if(IMG_DUMMY){
+        // Ardi: Filter the detected objects
+        // Please use image "11.jpg"
+        // For dummy use case only!
+        int k;
+        for(k=0; k<sizeof(selected_detections); k++)
+        {
+            char label_str[4096] = { 0 };
+            strcat(label_str, names[selected_detections[k].best_class]);
+
+            // Ardi: removing any un-wanted bounding boxes
+            if( (strcmp ("umbrella", label_str) == 0 && (selected_detections[k].det.prob[selected_detections[k].best_class] * 100) > 30)
+                || (is_recognized(names[selected_detections[k].best_class])) == FALSE
+            ){
+                int j;
+                for(j=k; j<selected_detections_num; j++){
+                    selected_detections[j] = selected_detections[j + 1];
+                }
+                selected_detections_num--;
+            }
+
+        }
+    }
 
     //////////////////////////// Modifications ////////////////////////////////////
 
@@ -670,20 +699,15 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
         // Ardi: Collecting [person] labels
         if(strcmp(label_str, "person") == 0){
             idx_person[detected_persons_num] = p;
-//            detected_persons[detected_persons_num] = selected_detections[p];
-//            best_class_persons[detected_persons_num] = selected_detections[p].best_class;
             detected_persons_num++;
+            printf("   >>>>> PERSON_ID: %d \n", p);
         }
 
         // Ardi: Collecting [flag] labels
         if(strcmp(label_str, "flag") == 0){
             idx_flag[detected_flags_num] = p;
-//            detected_flags[detected_flags_num] = selected_detections[p];
-//            best_class_flags[detected_persons_num] = selected_detections[p].best_class;
             detected_flags_num++;
-
-//            tmp_detected_flags[detected_tmp_flags_num] = selected_detections[p];
-//            detected_tmp_flags_num++;
+            printf("   >>>>> FLAG_ID: %d \n", p);
         }
     }
 
@@ -696,17 +720,15 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 //      (x1,y1)
 //    +------------+
 //    |            |
-//    |    (x3,y3) |
+//    |    (x4,y4) |
 //    |       +----------+
 //    |       |    |     |
 //    +-------|----+     |
 //            |  (x2,y2) |
 //            |          |
 //            +----------+
-//                     (x4,y4)
+//                     (x5,y5)
 
-
-//    printf(" >>>>>>> Best class PErson[0] = %d \n", selected_detections[0].best_class);
 
     // Ardi: Sample merging two bounding boxes
 //    verifying_intersection(
@@ -775,11 +797,11 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     float blue = 0;
     float rgb[3];
     box b;
-
-    int left;
-    int right;
-    int top;
-    int bot;
+//
+//    int left;
+//    int right;
+//    int top;
+//    int bot;
 
     char image_name[1024];
     int best_class_id;
@@ -826,29 +848,45 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             rgb[2] = blue;
             b = selected_detections[idx_person[i]].det.bbox;
 
-            left = (b.x - b.w / 2.)*im.w;
-            right = (b.x + b.w / 2.)*im.w;
-            top = (b.y - b.h / 2.)*im.h;
-            bot = (b.y + b.h / 2.)*im.h;
+            int left = (b.x - b.w / 2.)*im.w;
+            int right = (b.x + b.w / 2.)*im.w;
+            int top = (b.y - b.h / 2.)*im.h;
+            int bot = (b.y + b.h / 2.)*im.h;
 
+//            // Ardi: Use this information to resize the bounding box
+//            int b_width = right - left;
+//            int b_height = bot - top;
+//            int resized_w = b_width * RATIO_W;
+//            int resized_h = b_height * RATIO_H;
+
+//            printf(" ## Resized Pixel of PERSON B-Box ... \n\t(width: %d    height: %d)\n",
+//                resized_w, resized_h);
+//
 //            // Ardi: Demo enlarging bounding box
-//            left = left - (left * RATIO_W);
-//            top = top - (top * RATIO_H);
-//            right = right + (right * RATIO_W);
-//            bot = bot + (bot * RATIO_H);
+//            left = left - resized_w;
+//            top = top - resized_h;
+//            right = right + resized_w;
+//            bot = bot + resized_h;
 
-            if (left < 0) left = 0;
-            if (right > im.w - 1) right = im.w - 1;
-            if (top < 0) top = 0;
-            if (bot > im.h - 1) bot = im.h - 1;
+//            static left; static right; static top; static bot;
+//
+//            if (l < 0) left = 0; else left = l;
+//            if (r > im.w - 1) right = im.w - 1; else right = r;
+//            if (t < 0) top = 0; else top = t;
+//            if (b1 > im.h - 1) bot = im.h - 1; else bot = b1;
+
+//            if (left < 0) left = 0;
+//            if (right > im.w - 1) right = im.w - 1;
+//            if (top < 0) top = 0;
+//            if (bot > im.h - 1) bot = im.h - 1;
 
 //            int b_x_center = (left + right) / 2;
 //            int b_y_center = (top + bot) / 2;
 //            int b_width = right - left;
 //            int b_height = bot - top;
 
-//            printf(" ## PERSON B-Box ... \n\t(left: %d   top: %d   right: %d  bot: %d      im.w: %d    im.h: %d    width: %d)\n",
-//                left, top, right, bot, im.w, im.h, width);
+            printf(" ## PERSON B-Box ... \n\t(left: %d   top: %d   right: %d  bot: %d      im.w: %d    im.h: %d    width: %d)\n",
+                left, top, right, bot, im.w, im.h, width);
 
 //            printf("Label=%s; Center(x,y)=(%d x %d); w: %d, h: %d \n", names[selected_detections[idx_person[i]].best_class], b_x_center, b_y_center, b_width, b_height);
 
@@ -876,8 +914,12 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 
             // Ardi: Try comparing with each Flag
             intersected = 0;
+            int iid; // Intersect of FLAG_ID
+
             for (f = 0; f < detected_flags_num; ++f) {
 //                best_flag_class_id = selected_detections[idx_flag[f]].best_class;
+
+                printf(" >>> Loop for PERSON_ID: %d with FLAG_ID: %d\n", idx_person[i], idx_flag[f]);
 
                 is_intersect_occur = verifying_intersection(
 //                verifying_intersection(
@@ -895,9 +937,10 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 );
 
                 if (is_intersect_occur){
-                    printf(" ### HELL YEAH IT's INTERSECT !!!!\n");
+                    printf(" ### HELL YEAH IT's INTERSECT ! PERSON_ID=%d MATCH WITH FLAG_ID=%d \n\n", idx_person[i], idx_flag[i]);
                     intersect_idx[intersected] = idx_flag[f];
                     intersected++;
+                    iid = f;
                 }else{
                     printf(" ### NOOOOOOO NOOOO INTERSECT !!!!\n");
                 }
@@ -905,17 +948,33 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             }
 
             ///////////////// Validate intersected flags ////////////////////////
+            printf("///////////////// Validate intersected flags; intersected: %d //////////////////////// \n",
+                intersected);
             bool is_need_merging = FALSE;
             int sid_flag = 0;
 
             if (intersected == 1){
                 is_need_merging = TRUE;
                 sid_flag = intersect_idx[0];
+
+                printf(" >> IF; is_need_merging:%d  sid_flag:%d     f=%d    detected_flags_num:%d\n",
+                    is_need_merging, sid_flag, f, detected_flags_num);
+
+                int j;
+//                for(j=f; j<detected_flags_num; j++){
+                for(j=iid; j<detected_flags_num-1; j++){
+                    printf(" #### @ j=%d; re-writing FLAG_ID:%d into FLAG_ID:%d \n",
+                        j, idx_flag[j], idx_flag[j+1]);
+                    idx_flag[j] = idx_flag[j + 1];
+                    printf(" >>>>>> idx_flag[j] Baru: %d \n", idx_flag[j+1]);
+                }
+                detected_flags_num--;
             }else if (intersected > 1){
-                printf(" ## Calculate the distance and find the closest one!");
+                printf(" ## Calculate the distance and find the closest one!\n");
             }
 
             ///////////////// Verify whether need to merge the images of not /////////////
+            printf("///////////////// Verify whether need to merge the images of not ///////////// \n");
             if (is_need_merging){
                 // BEGIN MERGING HERE ...
                 printf(" ## BEGIN MERGING HERE ... idx_person[%d]: %d   sid_flag: %d\n", i, idx_person[i], sid_flag);
@@ -965,7 +1024,7 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 int best_class_id_merged = selected_detections[1].best_class;
 
                 // Ardi: save the detected object into a cropped image
-                sprintf(image_name, "results/merged_img_%d_%d_%s.jpg", frame_id, best_class_id_merged, merge_label);
+                sprintf(image_name, "results/merged_img_%d_%d_%d_%d_%s.jpg", idx_person[i], sid_flag, frame_id, best_class_id_merged, merge_label);
                 printf(" >>>> merged_image_name = %s \n", image_name);
                 save_image(cropped_merged_im, image_name);
                 free_image(cropped_merged_im);
@@ -992,6 +1051,9 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 
                 //////////// END Merging ..
             }
+
+            printf("////// END, next person please .. CURRENT detected_flags_num = %d \n\n\n",
+                detected_flags_num);
             // Else? Do nothing here. Let's go to the next person beounding box!
 
             ////////////////// Sample Code for merging between 2 images //////////////////////////////////
