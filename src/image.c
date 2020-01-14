@@ -25,7 +25,7 @@ typedef int bool;
 #define TRUE  1
 #define FALSE 0
 
-#define IMG_DUMMY 0 // set 1 if trying to use image "11.jpg"; default 0;
+#define IMG_DUMMY 1 // set 1 if trying to rename some labels into "Flag"; default 0;
 
 #define RATIO_W 0.3
 #define RATIO_H 0.35
@@ -280,8 +280,6 @@ image **load_alphabet()
     return alphabets;
 }
 
-
-
 // Creates array of detections with prob > thresh and fills best_class for them
 detection_with_class* get_actual_detections(detection *dets, int dets_num, float thresh, int* selected_detections_num, char **names)
 {
@@ -361,195 +359,6 @@ float min(float x1, float x2){
     }
 }
 
-/**
- * Check if two rectangles collide
- * x_1, y_1, width_1, and height_1 define the boundaries of the first rectangle
- * x_2, y_2, width_2, and height_2 define the boundaries of the second rectangle
- */
-//bool rectangle_collision(float x_1, float y_1, float width_1, float height_1, float x_2, float y_2, float width_2, float height_2)
-//{
-//  return !(x_1 > x_2+width_2 || x_1+width_1 < x_2 || y_1 > y_2+height_2 || y_1+height_1 < y_2);
-//}
-
-// Ardi: #Generate two text boxes a larger one that covers them
-// this is a problem best solved by Non Maximum Suppression
-// one solution: https://stackoverflow.com/questions/35958415/merging-overlapping-rectangle-in-opencv
-//int ** merge_boxes(int box1[], int box2[]){
-//    return box1;
-////    return [min(box1[0], box2[0]),
-////         min(box1[1], box2[1]),
-////         max(box1[2], box2[2]),
-////         max(box1[3], box2[3])]
-//}
-
-//void save_merged_bbox(image im, float left, float top, float right, float bot, int frame_id,
-//                        int im_w, int im_h, char *merge_label, int best_class_id){
-////void save_merged_bbox(image im, float left, float top, float right, float bot, char *merge_label, int frame_id, int im_w, int im_h){
-////void save_merged_bbox(image im, float left, float top, float right, float bot, int best_class_id, char *merge_label, int frame_id, int im_w, int im_h){
-////void save_merged_bbox(image im, float left, float top, float right, float bot, int best_class_id, int frame_id, char *merge_label){
-////void save_merged_bbox(image im, float left, float top, float right, float bot, int best_class_id, int frame_id){
-//    // Ardi: Save cropped bounding boxes
-//    // you should create directory: result_img
-//    printf(" >> // Ardi: Save cropped bounding boxes ... frame_id = %d \n", frame_id);
-//
-////    printf(" ## Merged B-Box ... \n\t(left: %d   top: %d   right: %d  bot: %d      im_w: %d    im_h: %d)\n",
-////            left, top, right, bot, im_w, im_h);
-//
-////    printf(" ## CAPTURED PARAMETERS ... \n\t(frame_id: %d   im.w: %d    im.h: %d)\n",
-////            frame_id, im_w, im_h);
-//
-////    printf(" ## CAPTURED PARAMETERS ... \n\t(merge_label: %s   frame_id: %d   im.w: %d    im.h: %d)\n",
-////            merge_label, frame_id, im_w, im_h);
-//
-//    printf(" ## Merged B-Box ... \n\t(left: %d   top: %d   right: %d  bot: %d      im_w: %d    im_h: %d)\n",
-//            left, top, right, bot, im_w, im_h);
-//
-//    static int copied_frame_id = -1;
-//    static image copy_img;
-//    if (copied_frame_id != frame_id) {
-//        copied_frame_id = frame_id;
-//        if (copy_img.data) free_image(copy_img);
-//        copy_img = copy_image(im);
-//    }
-//    image cropped_im = crop_image(copy_img, left, top, right - left, bot - top);
-////    static int img_id = 0;
-////     img_id++;
-//    char image_name[1024];
-////    int best_class_id = selected_detections[i].best_class;
-//
-//    // Ardi: save the detected object into a cropped image
-//    sprintf(image_name, "results/img_%d_%d_Person-Flag.jpg", frame_id, best_class_id);
-//    printf(" >>>> image_name = %s \n", image_name);
-//    save_image(cropped_im, image_name);
-//    free_image(cropped_im);
-//}
-//
-////void draw_merged_boxes(image im, float new_bbox[], int best_class, int classes, char *merge_label, image **alphabet){
-//void draw_merged_boxes(image im, float new_bbox[], float b_w, float b_h, int best_class, int classes, char *merge_label,
-//                        image **alphabet, int frame_id){
-//
-//    printf("### CAPTURED Bounding Box ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//        new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3]);
-//
-//    int width = im.h * .006;
-//    if (width < 1)
-//        width = 1;
-//
-//    int offset = best_class * 123457 % classes;
-//    float red = get_color(2, offset, classes);
-//    float green = get_color(1, offset, classes);
-//    float blue = get_color(0, offset, classes);
-//    float rgb[3];
-//
-//    rgb[0] = red;
-//    rgb[1] = green;
-//    rgb[2] = blue;
-//
-//    int left = (int) new_bbox[0] - 1;
-//    int right = (int) new_bbox[1] - 1;
-//    int top = (int) new_bbox[2] - 1;
-//    int bot = (int) new_bbox[3] - 1;
-//
-////    int left = (new_bbox[0] - b_w / 2.)*im.w;
-////    int right = (new_bbox[0] + b_w / 2.)*im.w;
-////    int top = (new_bbox[1] - b_h / 2.)*im.h;
-////    int bot = (new_bbox[1] + b_h / 2.)*im.h;
-////
-////    if (left < 0) left = 0;
-////    if (right > im.w - 1) right = im.w - 1;
-////    if (top < 0) top = 0;
-////    if (bot > im.h - 1) bot = im.h - 1;
-//
-//    printf(" ### merge_label = %s \n", merge_label);
-////    printf(" ### Frame_id = %d \n", frame_id);
-//
-////    float new_w = abs(new_bbox[0] - new_bbox[2]);
-////    float new_h = abs(new_bbox[1] - new_bbox[3]);
-//
-//    printf(" ## ORIGIN Merged B-Box ... \n\t(left: %d   top: %d   right: %d  bot: %d      im.w: %d    im.h: %d     width: %d)\n",
-//            left, top, right, bot, im.w, im.h, width);
-//
-////    int *im_w = im.w;
-////    int *im_h = im.h;
-//
-////    char label_str[4096] = { 0 };
-////    strcat(label_str, merge_label);
-//
-////    printf(" ## SENDING PARAMETERS ... \n\t(merge_label: %s   frame_id: %d   im.w: %d    im.h: %d)\n",
-////            merge_label, frame_id, im.w, im.h);
-//
-////    printf(" ## SENDING .. Merged B-Box ... \n\t(left: %d   top: %d   right: %d  bot: %d      im_w: %d    im_h: %d)\n",
-////            left, top, right, bot, im_w, im_h);
-//
-////    printf(" ## New B-Box V2 ... \n\t(left_x: %4.0f   top_y: %4.0f   w: %4.0f   h: %4.0f)\n",
-////        new_bbox[0], new_bbox[1], new_w, new_h);
-//
-//    // Ardi: parsing im_w and im_h since (somehow) the value is changed once parsed inside the function!
-////    save_merged_bbox(im, left, top, right, bot, frame_id, im_w, im_h, merge_label, best_class);
-//
-//    // Saving Cropped Image
-////    static int copied_frame_id = -1;
-////    static image copy_img;
-////    if (copied_frame_id != frame_id) {
-////        copied_frame_id = frame_id;
-////        if (copy_img.data) free_image(copy_img);
-////            copy_img = copy_image(im);
-////        }
-//
-//    static image copy_img;
-//    if (copy_img.data) free_image(copy_img);
-//    copy_img = copy_image(im);
-//    image cropped_im = crop_image(copy_img, left, top, right - left, bot - top);
-//    char image_name[1024];
-//    // Ardi: save the detected object into a cropped image
-//    sprintf(image_name, "results/img_%d_%d_Person-Flag.jpg", frame_id, best_class);
-//    printf(" >>>> image_name = %s \n", image_name);
-//    save_image(cropped_im, image_name);
-//    free_image(cropped_im);
-//
-//    draw_box_width(im, new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3], width, red, green, blue); // 3 channels RGB
-//    image label = get_label_v3(alphabet, merge_label, (im.h*.03));
-//    draw_label(im, new_bbox[1] + width, new_bbox[0], label, rgb);
-//}
-//
-//void verifying_intersection(float box1_x1, float box1_y1, float box1_w, float box1_h,
-//            float box2_x1, float box2_y1, float box2_w, float box2_h,
-////            image im, int best_class, int classes, char *merge_label, image **alphabet){
-//            image im, int best_class, int classes, char *merge_label, image **alphabet,
-//            int frame_id){
-//
-//    // Ardi: Convert {x,y,w,h} into {x1,y1,x2,y2}
-//    float box1_x2 = box1_x1 + box1_w;
-//    float box1_y2 = box1_y1 + box1_h;
-//    float box2_x2 = box2_x1 + box2_w;
-//    float box2_y2 = box2_y1 + box2_h;
-//
-//    printf("### Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//        box1_x1, box1_y1, box1_x2, box1_y2);
-//
-//    printf("### Box_02 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//        box2_x1, box2_y1, box2_x2, box2_y2);
-//
-//    // Ardi: Check whether intersection happens or not?
-//
-//    // Ardi: Got intersectio! Begin merging & Drawing merged bounding boxed
-//    float new_bbox[4] = {
-//        min(box1_x1, box1_x1),
-//        min(box1_y1, box2_y1),
-//        max(box1_x2, box2_x2),
-//        max(box1_y2, box2_y2)
-//    };
-//
-//    float new_w = abs(new_bbox[0] - new_bbox[2]);
-//    float new_h = abs(new_bbox[1] - new_bbox[3]);
-//
-//    printf("### NEW Bounding Box ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//        new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3]);
-//
-//    draw_merged_boxes(im, new_bbox, new_w, new_h, best_class, classes, "Person_Flag", alphabet, frame_id);
-////    draw_merged_boxes(im, new_bbox, best_class, classes, "Person Flag", alphabet);
-//}
-
 bool is_intersect(float x0, float y0, float x2, float y2,
                     float x4, float y4, float x5, float y5){
     if ( max(x4, x0) > min(x2, x5) || max(y4,y0) > min(y2, y5)){
@@ -580,9 +389,6 @@ double get_flag_distance(float box1_x1, float box1_y1, float box1_w, float box1_
     double pcy_fcy = pow((pc_y - fc_y), 2);
     double distance = sqrt(pcx_fcx + pcy_fcy);
 
-//    printf(" >>> pcx_fcx:%4.0f  pcy_fcy:%4.f    distance:%4.0f \n",
-//            pcx_fcx, pcy_fcy, distance);
-
     return distance;
 
 }
@@ -596,9 +402,6 @@ bool verifying_intersection(float box1_x1, float box1_y1, float box1_w, float bo
     float box1_y2 = box1_y1 + box1_h;
     float box2_x2 = box2_x1 + box2_w;
     float box2_y2 = box2_y1 + box2_h;
-
-//    printf("### [AWAL] Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//        box1_x1, box1_y1, box1_x2, box1_y2);
 
     // Ardi: Only enlarge BBox of the Person
     if (is_enlarged){
@@ -618,31 +421,16 @@ bool verifying_intersection(float box1_x1, float box1_y1, float box1_w, float bo
         if (box1_x2 < 0) box1_x2 = 0;
         if (box1_y2 > im_h - 1) box1_y2 = im_h - 1;
 
-        int b2_width = box2_x2 - box2_x1;
-        int b2_height = box2_y2 - box2_y1;
-//        box2_x1 = box2_x1 - (box2_x1 * RATIO_W);
-//        box2_y1 = box2_y1 - (box2_y1 * RATIO_H);
-//        box2_x2 = box2_x2 + (box2_x2 * RATIO_W);
-//        box2_y2 = box2_y2 + (box2_y2 * RATIO_H);
-//
-//        if (box1_x1 < 0) box1_x1 = 0;
-//        if (box1_y1 > im_w - 1) box1_y1 = im_w - 1;
-//        if (box1_x2 < 0) box1_x2 = 0;
-//        if (box1_y2 > im_h - 1) box1_y2 = im_h - 1;
+//        int b2_width = box2_x2 - box2_x1;
+//        int b2_height = box2_y2 - box2_y1;
 
-        printf("## Box-01: height: %d px; width: %d px; top: %4.0f px; left: %4.0f px;\n",
-            b_width, b_height, box1_y1, box1_x1);
+//        printf("## Box-01: height: %d px; width: %d px; top: %4.0f px; left: %4.0f px;\n",
+//            b_width, b_height, box1_y1, box1_x1);
 
-        printf("## Box-02: height: %d px; width: %d px; top: %4.0f px; left: %4.0f px;\n",
-            b2_width, b2_height, box1_y2, box2_x1);
+//        printf("## Box-02: height: %d px; width: %d px; top: %4.0f px; left: %4.0f px;\n",
+//            b2_width, b2_height, box1_y2, box2_x1);
 
     }
-
-//    printf("### Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//        box1_x1, box1_y1, box1_x2, box1_y2);
-
-//    printf("### Box_02 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//        box2_x1, box2_y1, box2_x2, box2_y2);
 
     // Ardi: Check whether intersection happens or not?
     return is_intersect(box1_x1, box1_y1, box1_x2, box1_y2,
@@ -659,77 +447,73 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 
     int detected_persons_num = 0; // index of detected_persons
     int detected_flags_num = 0; // index of detected_persons
-//    int detected_tmp_flags_num = 0; // index of detected_persons
 
     // text output
     qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_lefts);
-//    detection_with_class detected_persons[selected_detections_num];
-//    detection_with_class detected_flags[detected_flags_num];
-//    detection_with_class tmp_detected_flags[detected_tmp_flags_num];
     int idx_person[selected_detections_num];
     int idx_flag[selected_detections_num];
-//    int best_class_persons[selected_detections_num];
-//    int best_class_flags[detected_flags_num];
 
 
     ///////////////////////////// Filter the detected objects: Only for image "11.jpg" ///////////////////////////////////
 
-    if(IMG_DUMMY){
-        // Ardi: Filter the detected objects
-        // Please use image "11.jpg"
-        // For dummy use case only!
-        int k;
-        for(k=0; k<sizeof(selected_detections); k++)
-        {
-            char label_str[4096] = { 0 };
-            strcat(label_str, names[selected_detections[k].best_class]);
-
-            // Ardi: removing any un-wanted bounding boxes
-            if( (strcmp ("umbrella", label_str) == 0 && (selected_detections[k].det.prob[selected_detections[k].best_class] * 100) > 30)
-                || (is_recognized(names[selected_detections[k].best_class])) == FALSE
-            ){
-                int j;
-                for(j=k; j<selected_detections_num; j++){
-                    selected_detections[j] = selected_detections[j + 1];
-                }
-                selected_detections_num--;
-            }
-
-        }
-    }
+//    // Ardi: Basically this code is not used anymore
+//    if(IMG_DUMMY){
+//        // Ardi: Filter the detected objects
+//        // Please use image "11.jpg"
+//        // For dummy use case only!
+//        int k;
+//        for(k=0; k<sizeof(selected_detections); k++)
+//        {
+//            char label_str[4096] = { 0 };
+//            strcat(label_str, names[selected_detections[k].best_class]);
+//
+//            // Ardi: removing any un-wanted bounding boxes
+//            if( (strcmp ("umbrella", label_str) == 0 && (selected_detections[k].det.prob[selected_detections[k].best_class] * 100) > 30)
+//                || (is_recognized(names[selected_detections[k].best_class])) == FALSE
+//            ){
+//                int j;
+//                for(j=k; j<selected_detections_num; j++){
+//                    selected_detections[j] = selected_detections[j + 1];
+//                }
+//                selected_detections_num--;
+//            }
+//
+//        }
+//    }
 
     //////////////////////////// Modifications ////////////////////////////////////
 
     // Ardi: Modifications
     // For dummy use case only!
-    int p;
-    for(p=0; p<selected_detections_num; p++)
-    {
-        char label_str[4096] = { 0 };
-        strcat(label_str, names[selected_detections[p].best_class]);
+    if(IMG_DUMMY){
+        int p;
+        for(p=0; p<selected_detections_num; p++)
+        {
+            char label_str[4096] = { 0 };
+            strcat(label_str, names[selected_detections[p].best_class]);
 
-        // Ardi: renaming labels
-        if (strcmp ("kite", label_str) == 0
-            || strcmp ("umbrella", label_str) == 0
-        ){
-            strcpy(names[selected_detections[p].best_class], "flag");
-            strcpy(label_str, "flag");
-        }
+            // Ardi: renaming labels
+            if (strcmp ("kite", label_str) == 0
+                || strcmp ("umbrella", label_str) == 0
+            ){
+                strcpy(names[selected_detections[p].best_class], "flag");
+                strcpy(label_str, "flag");
+            }
 
-        // Ardi: Collecting [person] labels
-        if(strcmp(label_str, "person") == 0){
-            idx_person[detected_persons_num] = p;
-            detected_persons_num++;
-            printf("   >>>>> PERSON_ID: %d \n", p);
-        }
+            // Ardi: Collecting [person] labels
+            if(strcmp(label_str, "person") == 0){
+                idx_person[detected_persons_num] = p;
+                detected_persons_num++;
+            }
 
-        // Ardi: Collecting [flag] labels
-        if(strcmp(label_str, "flag") == 0){
-            idx_flag[detected_flags_num] = p;
-            detected_flags_num++;
-            printf("   >>>>> FLAG_ID: %d \n", p);
+            // Ardi: Collecting [flag] labels
+            if(strcmp(label_str, "flag") == 0){
+                idx_flag[detected_flags_num] = p;
+                detected_flags_num++;
+            }
         }
     }
+
 
     /////////////////////// [NOT USED] Find Flag which intersects with Person /////////////////////////////////////////
 
@@ -749,23 +533,6 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 //            +----------+
 //                     (x5,y5)
 
-
-    // Ardi: Sample merging two bounding boxes
-//    verifying_intersection(
-//        round((selected_detections[0].det.bbox.x - selected_detections[0].det.bbox.w / 2)*im.w),
-//        round((selected_detections[0].det.bbox.y - selected_detections[0].det.bbox.h / 2)*im.h),
-//        round(selected_detections[0].det.bbox.w*im.w),
-//        round(selected_detections[0].det.bbox.h*im.h),
-//
-//        round((selected_detections[1].det.bbox.x - selected_detections[1].det.bbox.w / 2)*im.w),
-//        round((selected_detections[1].det.bbox.y - selected_detections[1].det.bbox.h / 2)*im.h),
-//        round(selected_detections[1].det.bbox.w*im.w),
-//        round(selected_detections[1].det.bbox.h*im.h),
-//
-////        im, selected_detections[0].best_class, classes, "Person Flag", alphabet
-//        im, selected_detections[0].best_class, classes, "Person_Flag", alphabet,
-//        frame_id
-//    );
 
     /////////////////////////////// END Drawing Merged Bounding Boxes! /////////////
     ////////////////////// [NOT USED] Try printing bounding box information ////////
@@ -817,15 +584,9 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     float blue = 0;
     float rgb[3];
     box b;
-//
-//    int left;
-//    int right;
-//    int top;
-//    int bot;
 
     char image_name[1024];
     int best_class_id;
-//    int best_flag_class_id;
     int intersected = 0;
     int intersect_idx[detected_flags_num];
 
@@ -861,7 +622,6 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             red = get_color(2, offset, classes);
             green = get_color(1, offset, classes);
             blue = get_color(0, offset, classes);
-//            rgb[3];
 
             rgb[0] = red;
             rgb[1] = green;
@@ -888,27 +648,13 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 //            right = right + resized_w;
 //            bot = bot + resized_h;
 
-//            static left; static right; static top; static bot;
-//
-//            if (l < 0) left = 0; else left = l;
-//            if (r > im.w - 1) right = im.w - 1; else right = r;
-//            if (t < 0) top = 0; else top = t;
-//            if (b1 > im.h - 1) bot = im.h - 1; else bot = b1;
-
 //            if (left < 0) left = 0;
 //            if (right > im.w - 1) right = im.w - 1;
 //            if (top < 0) top = 0;
 //            if (bot > im.h - 1) bot = im.h - 1;
 
-//            int b_x_center = (left + right) / 2;
-//            int b_y_center = (top + bot) / 2;
-//            int b_width = right - left;
-//            int b_height = bot - top;
-
-            printf(" ## PERSON B-Box ... \n\t(left: %d   top: %d   right: %d  bot: %d      im.w: %d    im.h: %d    width: %d)\n",
-                left, top, right, bot, im.w, im.h, width);
-
-//            printf("Label=%s; Center(x,y)=(%d x %d); w: %d, h: %d \n", names[selected_detections[idx_person[i]].best_class], b_x_center, b_y_center, b_width, b_height);
+//            printf(" ## PERSON B-Box ... \n\t(left: %d   top: %d   right: %d  bot: %d      im.w: %d    im.h: %d    width: %d)\n",
+//                left, top, right, bot, im.w, im.h, width);
 
             // Ardi: Save cropped bounding boxes
             // PERSON DATA
@@ -937,8 +683,6 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             int iid; // Intersect of FLAG_ID
 
             for (f = 0; f < detected_flags_num; ++f) {
-//                printf(" >>> Loop for PERSON_ID: %d with FLAG_ID: %d\n", idx_person[i], idx_flag[f]);
-
                 is_intersect_occur = verifying_intersection(
                     round((selected_detections[idx_person[i]].det.bbox.x - selected_detections[idx_person[i]].det.bbox.w / 2)*im.w),
                     round((selected_detections[idx_person[i]].det.bbox.y - selected_detections[idx_person[i]].det.bbox.h / 2)*im.h),
@@ -954,18 +698,19 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 );
 
                 if (is_intersect_occur){
-                    printf(" ### INTERSECT FOUND! PERSON_ID=%d MATCH WITH FLAG_ID=%d \n\n", idx_person[i], idx_flag[i]);
+//                    printf(" ### INTERSECT FOUND! PERSON_ID=%d MATCH WITH FLAG_ID=%d \n\n", idx_person[i], idx_flag[i]);
                     intersect_idx[intersected] = idx_flag[f];
                     intersected++;
                     iid = f;
-                }else{
-                    printf(" ### INTERSECTION NOT FOUND!\n");
                 }
+//                else{
+//                    printf(" ### INTERSECTION NOT FOUND!\n");
+//                }
 
             }
 
             ///////////////// Validate intersected flags ////////////////////////
-            printf("//////// Validate intersected flags; intersected: %d //////// \n", intersected);
+//            printf("//////// Validate intersected flags; intersected: %d //////// \n", intersected);
             bool is_need_merging = FALSE;
             int sid_flag = 0;
 
@@ -984,11 +729,10 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 }
                 detected_flags_num--;
             }else if (intersected > 1){
-                printf(" ## Calculate the distance and find the closest one!\n");
+//                printf(" ## Calculate the distance and find the closest one!\n");
                 is_need_merging = TRUE;
 
                 // Ardi: Calculating distance of each intersected flag
-//                int nearest_flag_id = -1;
                 int distance = 999;
                 int nf;
                 for (nf = 0; nf < intersected; ++nf) {
@@ -1019,10 +763,10 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             }
 
             ///////////////// Verify whether need to merge the images of not /////////////
-            printf("///////////////// Verify whether need to merge the images of not ///////////// \n");
+//            printf("///////////////// Verify whether need to merge the images of not ///////////// \n");
             if (is_need_merging){
                 // BEGIN MERGING HERE ...
-                printf(" ## BEGIN MERGING HERE ... idx_person[%d]: %d   sid_flag: %d\n", i, idx_person[i], sid_flag);
+//                printf(" ## BEGIN MERGING HERE ... idx_person[%d]: %d   sid_flag: %d\n", i, idx_person[i], sid_flag);
 
                 box1_x1 = round((selected_detections[idx_person[i]].det.bbox.x - selected_detections[idx_person[i]].det.bbox.w / 2)*im.w);
                 box1_y1 = round((selected_detections[idx_person[i]].det.bbox.y - selected_detections[idx_person[i]].det.bbox.h / 2)*im.h);
@@ -1041,12 +785,6 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 box2_x2 = box2_x1 + box2_w;
                 box2_y2 = box2_y1 + box2_h;
 
-//                printf("### Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//                    box1_x1, box1_y1, box1_x2, box1_y2);
-//
-//                printf("### Box_02 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//                    box2_x1, box2_y1, box2_x2, box2_y2);
-
                 // Ardi: Got intersection! Begin merging & Drawing merged bounding boxed
                 float new_bbox[4] = {
                     min(box1_x1, box2_x1),
@@ -1058,9 +796,6 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 float new_w = abs(new_bbox[0] - new_bbox[2]);
                 float new_h = abs(new_bbox[1] - new_bbox[3]);
 
-//                printf("### NEW MERGED Bounding Box ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//                    new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3]);
-
                 if (copy_img.data) free_image(copy_img);
                 copy_img = copy_image(im);
                 image cropped_merged_im = crop_image(copy_img, new_bbox[0], new_bbox[1], new_w, new_h);
@@ -1068,7 +803,6 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 
                 // Ardi: save the detected object into a cropped image
                 sprintf(image_name, "results/merged_img_%d_%d_%d_%d_%s.jpg", idx_person[i], sid_flag, frame_id, best_class_id_merged, merge_label);
-//                printf(" >>>> merged_image_name = %s \n", image_name);
                 save_image(cropped_merged_im, image_name);
                 free_image(cropped_merged_im);
 
@@ -1092,91 +826,11 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                     free_image(label);
                 }
 
-                //////////// END Merging ..
             }
 
-            printf("////// END, next person please .. CURRENT detected_flags_num = %d \n\n\n",
-                detected_flags_num);
-            // Else? Do nothing here. Let's go to the next person beounding box!
+//            printf("////// END, next person please .. CURRENT detected_flags_num = %d \n\n\n",
+//                detected_flags_num);
 
-            ////////////////// Sample Code for merging between 2 images //////////////////////////////////
-
-//            box1_x1 = round((selected_detections[0].det.bbox.x - selected_detections[0].det.bbox.w / 2)*im.w);
-//            box1_y1 = round((selected_detections[0].det.bbox.y - selected_detections[0].det.bbox.h / 2)*im.h);
-//            box1_w = round(selected_detections[0].det.bbox.w*im.w);
-//            box1_h = round(selected_detections[0].det.bbox.h*im.h);
-//
-//            box2_x1 = round((selected_detections[1].det.bbox.x - selected_detections[1].det.bbox.w / 2)*im.w);
-//            box2_y1 = round((selected_detections[1].det.bbox.y - selected_detections[1].det.bbox.h / 2)*im.h);
-//            box2_w = round(selected_detections[1].det.bbox.w*im.w);
-//            box2_h = round(selected_detections[1].det.bbox.h*im.h);
-//
-//            // Ardi: Merger bounding boxes
-//            // Ardi: Convert {x,y,w,h} into {x1,y1,x2,y2}
-//            box1_x2 = box1_x1 + box1_w;
-//            box1_y2 = box1_y1 + box1_h;
-//            box2_x2 = box2_x1 + box2_w;
-//            box2_y2 = box2_y1 + box2_h;
-//
-//            printf("### Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//                box1_x1, box1_y1, box1_x2, box1_y2);
-//
-//            printf("### Box_02 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//                box2_x1, box2_y1, box2_x2, box2_y2);
-//
-//            // Ardi: Check whether intersection happens or not?
-//
-//            // Ardi: Got intersectio! Begin merging & Drawing merged bounding boxed
-//            float new_bbox[4] = {
-//                min(box1_x1, box1_x1),
-//                min(box1_y1, box2_y1),
-//                max(box1_x2, box2_x2),
-//                max(box1_y2, box2_y2)
-//            };
-//
-//            float new_w = abs(new_bbox[0] - new_bbox[2]);
-//            float new_h = abs(new_bbox[1] - new_bbox[3]);
-//
-//            printf("### NEW MERGED Bounding Box ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-//                new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3]);
-//
-//            if (copy_img.data) free_image(copy_img);
-//            copy_img = copy_image(im);
-//            image cropped_merged_im = crop_image(copy_img, new_bbox[0], new_bbox[1], new_w, new_h);
-//            int best_class_id_merged = selected_detections[1].best_class;
-//
-//            // Ardi: save the detected object into a cropped image
-//            sprintf(image_name, "results/merged_img_%d_%d_%s.jpg", frame_id, best_class_id_merged, merge_label);
-//            printf(" >>>> merged_image_name = %s \n", image_name);
-//            save_image(cropped_merged_im, image_name);
-//            free_image(cropped_merged_im);
-//
-//            draw_box_width(im, new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3], width, red, green, blue); // 3 channels RGB
-////            image merged_label = get_label_v3(alphabet, merge_label, (im.h*.03));
-////            draw_label(im, new_bbox[1] + width, new_bbox[0], merged_label, rgb);
-//
-//            // Ardi: Drawing Label of each bounding box
-//            if (alphabet) {
-//                char label_str[4096] = { 0 };
-//                strcat(label_str, merge_label);
-////                strcat(label_str, names[selected_detections[i].best_class]);
-//
-//                int j;
-//                for (j = 0; j < classes; ++j) {
-//                    if (selected_detections[idx_person[i]].det.prob[j] > thresh && j != selected_detections[idx_person[i]].best_class) {
-////                    if (selected_detections[i].det.prob[j] > thresh && j != selected_detections[i].best_class) {
-//                        strcat(label_str, ", ");
-//                        strcat(label_str, names[j]);
-//                    }
-//                }
-//
-//                image label = get_label_v3(alphabet, label_str, (im.h*.03));
-////                draw_label(im, top + width, left, label, rgb);
-//                draw_label(im, new_bbox[1] + width, new_bbox[0], label, rgb);
-//                free_image(label);
-//            }
-
-            ////////////// END merging sample ///////////////////////////////
     }
 
 
