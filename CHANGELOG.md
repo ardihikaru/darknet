@@ -1,3 +1,11 @@
+## 2.0 (一月 15, 2020)
+  - finished development for merged bounding boxes
+  - deleted unused codes
+  - finished implementation of 1NN
+  - update: - finished bounding box pairing of Person & Flag
+  - updates: - bounding box person-flag.
+  - Merge branch 'release-1.1.1' into feature/5g-dive/aerial-img
+
 ## 1.1.1 (一月 13, 2020)
   - update readme
   - Merge branch 'release-1.1' into feature/5g-dive/aerial-img
