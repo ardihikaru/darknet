@@ -559,6 +559,34 @@ bool is_intersect(float x0, float y0, float x2, float y2,
     }
 }
 
+double get_flag_distance(float box1_x1, float box1_y1, float box1_w, float box1_h,
+            float box2_x1, float box2_y1, float box2_w, float box2_h){
+
+    // Ardi: Convert {x,y,w,h} into {x1,y1,x2,y2}
+    float box1_x2 = box1_x1 + box1_w;
+    float box1_y2 = box1_y1 + box1_h;
+    float box2_x2 = box2_x1 + box2_w;
+    float box2_y2 = box2_y1 + box2_h;
+
+    // Ardi: person centroid
+    double pc_x = (box1_x1 + box1_x2) / 2;
+    double pc_y = (box1_y1 + box1_y2) / 2;
+
+    // Ardi: flag centroid
+    double fc_x = (box2_x1 + box2_x2) / 2;
+    double fc_y = (box2_y1 + box2_y2) / 2;
+
+    double pcx_fcx = pow((pc_x - fc_x), 2);
+    double pcy_fcy = pow((pc_y - fc_y), 2);
+    double distance = sqrt(pcx_fcx + pcy_fcy);
+
+//    printf(" >>> pcx_fcx:%4.0f  pcy_fcy:%4.f    distance:%4.0f \n",
+//            pcx_fcx, pcy_fcy, distance);
+
+    return distance;
+
+}
+
 bool verifying_intersection(float box1_x1, float box1_y1, float box1_w, float box1_h,
             float box2_x1, float box2_y1, float box2_w, float box2_h, bool is_enlarged,
             int im_w, int im_h){
@@ -574,19 +602,11 @@ bool verifying_intersection(float box1_x1, float box1_y1, float box1_w, float bo
 
     // Ardi: Only enlarge BBox of the Person
     if (is_enlarged){
-        printf(" >>>>> IYA INI PROSES ENLARGING !!\n");
-
         // Ardi: Use this information to resize the bounding box
         int b_width = box1_x2 - box1_x1;
         int b_height = box1_y2 - box1_y1;
         int resized_w = b_width * RATIO_W;
         int resized_h = b_height * RATIO_H;
-
-//            // Ardi: Demo enlarging bounding box
-//            left = left - resized_w;
-//            top = top - resized_h;
-//            right = right + resized_w;
-//            bot = bot + resized_h;
 
         box1_x1 = box1_x1 - resized_w;
         box1_y1 = box1_y1 - resized_h;
@@ -917,12 +937,9 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             int iid; // Intersect of FLAG_ID
 
             for (f = 0; f < detected_flags_num; ++f) {
-//                best_flag_class_id = selected_detections[idx_flag[f]].best_class;
-
-                printf(" >>> Loop for PERSON_ID: %d with FLAG_ID: %d\n", idx_person[i], idx_flag[f]);
+//                printf(" >>> Loop for PERSON_ID: %d with FLAG_ID: %d\n", idx_person[i], idx_flag[f]);
 
                 is_intersect_occur = verifying_intersection(
-//                verifying_intersection(
                     round((selected_detections[idx_person[i]].det.bbox.x - selected_detections[idx_person[i]].det.bbox.w / 2)*im.w),
                     round((selected_detections[idx_person[i]].det.bbox.y - selected_detections[idx_person[i]].det.bbox.h / 2)*im.h),
                     round(selected_detections[idx_person[i]].det.bbox.w*im.w),
@@ -937,19 +954,18 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 );
 
                 if (is_intersect_occur){
-                    printf(" ### HELL YEAH IT's INTERSECT ! PERSON_ID=%d MATCH WITH FLAG_ID=%d \n\n", idx_person[i], idx_flag[i]);
+                    printf(" ### INTERSECT FOUND! PERSON_ID=%d MATCH WITH FLAG_ID=%d \n\n", idx_person[i], idx_flag[i]);
                     intersect_idx[intersected] = idx_flag[f];
                     intersected++;
                     iid = f;
                 }else{
-                    printf(" ### NOOOOOOO NOOOO INTERSECT !!!!\n");
+                    printf(" ### INTERSECTION NOT FOUND!\n");
                 }
 
             }
 
             ///////////////// Validate intersected flags ////////////////////////
-            printf("///////////////// Validate intersected flags; intersected: %d //////////////////////// \n",
-                intersected);
+            printf("//////// Validate intersected flags; intersected: %d //////// \n", intersected);
             bool is_need_merging = FALSE;
             int sid_flag = 0;
 
@@ -957,20 +973,49 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 is_need_merging = TRUE;
                 sid_flag = intersect_idx[0];
 
-                printf(" >> IF; is_need_merging:%d  sid_flag:%d     f=%d    detected_flags_num:%d\n",
-                    is_need_merging, sid_flag, f, detected_flags_num);
+//                printf(" >> IF; is_need_merging:%d  sid_flag:%d     f=%d    detected_flags_num:%d\n",
+//                    is_need_merging, sid_flag, f, detected_flags_num);
 
+
+                // Ardi: Deleting selected flag
                 int j;
-//                for(j=f; j<detected_flags_num; j++){
                 for(j=iid; j<detected_flags_num-1; j++){
-                    printf(" #### @ j=%d; re-writing FLAG_ID:%d into FLAG_ID:%d \n",
-                        j, idx_flag[j], idx_flag[j+1]);
                     idx_flag[j] = idx_flag[j + 1];
-                    printf(" >>>>>> idx_flag[j] Baru: %d \n", idx_flag[j+1]);
                 }
                 detected_flags_num--;
             }else if (intersected > 1){
                 printf(" ## Calculate the distance and find the closest one!\n");
+                is_need_merging = TRUE;
+
+                // Ardi: Calculating distance of each intersected flag
+//                int nearest_flag_id = -1;
+                int distance = 999;
+                int nf;
+                for (nf = 0; nf < intersected; ++nf) {
+                    double calcd_dist = get_flag_distance(
+                        round((selected_detections[idx_person[i]].det.bbox.x - selected_detections[idx_person[i]].det.bbox.w / 2)*im.w),
+                        round((selected_detections[idx_person[i]].det.bbox.y - selected_detections[idx_person[i]].det.bbox.h / 2)*im.h),
+                        round(selected_detections[idx_person[i]].det.bbox.w*im.w),
+                        round(selected_detections[idx_person[i]].det.bbox.h*im.h),
+
+                        round((selected_detections[intersect_idx[nf]].det.bbox.x - selected_detections[intersect_idx[nf]].det.bbox.w / 2)*im.w),
+                        round((selected_detections[intersect_idx[nf]].det.bbox.y - selected_detections[intersect_idx[nf]].det.bbox.h / 2)*im.h),
+                        round(selected_detections[intersect_idx[nf]].det.bbox.w*im.w),
+                        round(selected_detections[intersect_idx[nf]].det.bbox.h*im.h)
+                    );
+//                    printf(" >>>>> this distance = %4.0f \n", calcd_dist);
+                    if (distance > calcd_dist){
+                        iid = nf;
+                        sid_flag = intersect_idx[nf];
+                    }
+                }
+
+                // Ardi: Deleting selected flag
+                int j;
+                for(j=iid; j<detected_flags_num-1; j++){
+                    idx_flag[j] = idx_flag[j + 1];
+                }
+                detected_flags_num--;
             }
 
             ///////////////// Verify whether need to merge the images of not /////////////
@@ -996,13 +1041,11 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 box2_x2 = box2_x1 + box2_w;
                 box2_y2 = box2_y1 + box2_h;
 
-                printf("### Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-                    box1_x1, box1_y1, box1_x2, box1_y2);
-
-                printf("### Box_02 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-                    box2_x1, box2_y1, box2_x2, box2_y2);
-
-                // Ardi: Check whether intersection happens or not?
+//                printf("### Box_01 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+//                    box1_x1, box1_y1, box1_x2, box1_y2);
+//
+//                printf("### Box_02 ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+//                    box2_x1, box2_y1, box2_x2, box2_y2);
 
                 // Ardi: Got intersection! Begin merging & Drawing merged bounding boxed
                 float new_bbox[4] = {
@@ -1015,8 +1058,8 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
                 float new_w = abs(new_bbox[0] - new_bbox[2]);
                 float new_h = abs(new_bbox[1] - new_bbox[3]);
 
-                printf("### NEW MERGED Bounding Box ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
-                    new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3]);
+//                printf("### NEW MERGED Bounding Box ... \n\t(left_x1: %4.0f   top_y1: %4.0f   right_x2: %4.0f   bot_y2: %4.0f)\n",
+//                    new_bbox[0], new_bbox[1], new_bbox[2], new_bbox[3]);
 
                 if (copy_img.data) free_image(copy_img);
                 copy_img = copy_image(im);
@@ -1025,7 +1068,7 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
 
                 // Ardi: save the detected object into a cropped image
                 sprintf(image_name, "results/merged_img_%d_%d_%d_%d_%s.jpg", idx_person[i], sid_flag, frame_id, best_class_id_merged, merge_label);
-                printf(" >>>> merged_image_name = %s \n", image_name);
+//                printf(" >>>> merged_image_name = %s \n", image_name);
                 save_image(cropped_merged_im, image_name);
                 free_image(cropped_merged_im);
 
