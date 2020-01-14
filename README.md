@@ -4,9 +4,15 @@
 More details: http://pjreddie.com/darknet/yolo/
 
 ## Ardihikaru Docs:
+- Sample Dataset (Since it's ignored by .gitignore by default):
+    - Please make sure to copy pre-trained dataset from `sample_dataset/AlexeyAB/` below:
+        1. Folder `labels'
+        2. File `coco.names`
+    - Paste those files into directory `data`.
 - Sample usage:
 ```
-./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output data/others/
+./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output sample_dataset/00.jpg
+./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output sample_dataset/11.jpg
 ```
 - re-compile after any modification:
 ```
