@@ -25,7 +25,7 @@ typedef int bool;
 #define TRUE  1
 #define FALSE 0
 
-#define IMG_DUMMY 1 // set 1 if trying to rename some labels into "Flag"; default 0;
+#define IMG_DUMMY 0 // set 1 if trying to rename some labels into "Flag"; default 0;
 
 #define RATIO_W 0.3
 #define RATIO_H 0.35
@@ -501,19 +501,43 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             }
 
             // Ardi: Collecting [person] labels
-            if(strcmp(label_str, "person") == 0){
+            if(strcmp(label_str, "person") == 0 || strcmp(label_str, "Person") == 0){
                 idx_person[detected_persons_num] = p;
                 detected_persons_num++;
             }
 
             // Ardi: Collecting [flag] labels
-            if(strcmp(label_str, "flag") == 0){
+            if(strcmp(label_str, "flag") == 0 || strcmp(label_str, "Flag") == 0){
+                idx_flag[detected_flags_num] = p;
+                detected_flags_num++;
+            }
+        }
+    }else{
+        int p;
+        for(p=0; p<selected_detections_num; p++)
+        {
+            char label_str[4096] = { 0 };
+            strcat(label_str, names[selected_detections[p].best_class]);
+
+            printf(" ### label_str = %s \n", label_str);
+
+            // Ardi: Collecting [person] labels
+            if(strcmp(label_str, "person") == 0 || strcmp(label_str, "Person") == 0){
+                idx_person[detected_persons_num] = p;
+                detected_persons_num++;
+            }
+
+            // Ardi: Collecting [flag] labels
+            if(strcmp(label_str, "flag") == 0 || strcmp(label_str, "Flag") == 0){
                 idx_flag[detected_flags_num] = p;
                 detected_flags_num++;
             }
         }
     }
 
+//    printf(" ### selected_detections_num = %d \n", selected_detections_num);
+//    printf(" ### detected_persons_num = %d \n", detected_persons_num);
+//    printf(" ### detected_flags_num = %d \n", detected_flags_num);
 
     /////////////////////// [NOT USED] Find Flag which intersects with Person /////////////////////////////////////////
 
@@ -537,36 +561,31 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     /////////////////////////////// END Drawing Merged Bounding Boxes! /////////////
     ////////////////////// [NOT USED] Try printing bounding box information ////////
 
-//    printf("\n");
-//    int i;
-//    // Ardi: Try printing bounding box information
-////    int i;
-//    for (i = 0; i < selected_detections_num; ++i) {
-//        const int best_class = selected_detections[i].best_class;
-//
-//        // Ardi: try recognizing the detected object
-////        is_recognized(names[best_class]);
-//
-//        printf("%s: %.0f%%", names[best_class],    selected_detections[i].det.prob[best_class] * 100);
-//        if (ext_output)
-//            printf("\t( >>>>> left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
-//                round((selected_detections[i].det.bbox.x - selected_detections[i].det.bbox.w / 2)*im.w),
-//                round((selected_detections[i].det.bbox.y - selected_detections[i].det.bbox.h / 2)*im.h),
-//                round(selected_detections[i].det.bbox.w*im.w),
-//                round(selected_detections[i].det.bbox.h*im.h));
-//        else
-//            printf("\n");
-//
-//
-//        int j;
-//        for (j = 0; j < classes; ++j) {
-//            if (selected_detections[i].det.prob[j] > thresh && j != best_class) {
-//                printf("%s: %.0f%%\n", names[j], selected_detections[i].det.prob[j] * 100);
-//            }
-//        }
-//    }
+    printf("\n");
+    int i;
+    // Ardi: Try printing bounding box information
+    for (i = 0; i < selected_detections_num; ++i) {
+        const int best_class = selected_detections[i].best_class;
 
-//    printf("\n");
+        printf("%s: %.0f%%", names[best_class],    selected_detections[i].det.prob[best_class] * 100);
+        if (ext_output)
+            printf("\t( >>>>> left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
+                round((selected_detections[i].det.bbox.x - selected_detections[i].det.bbox.w / 2)*im.w),
+                round((selected_detections[i].det.bbox.y - selected_detections[i].det.bbox.h / 2)*im.h),
+                round(selected_detections[i].det.bbox.w*im.w),
+                round(selected_detections[i].det.bbox.h*im.h));
+        else
+            printf("\n");
+
+        int j;
+        for (j = 0; j < classes; ++j) {
+            if (selected_detections[i].det.prob[j] > thresh && j != best_class) {
+                printf("%s: %.0f%%\n", names[j], selected_detections[i].det.prob[j] * 100);
+            }
+        }
+    }
+
+    printf("\n");
 
     // image output
     // sort the result by the smallest to the highest (Ardi: NO NEED!)
@@ -575,7 +594,7 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
     ////////////////////// Ardi: Initialize empty variables, which will be used later below. /////////////////
 
     // Ardi: Initialize empty variables, which will be used later below.
-    int i;
+//    int i;
     int f;
 
     int offset = 0;
@@ -710,7 +729,7 @@ void draw_detections_v3(image im, detection *dets, int num, float thresh, char *
             }
 
             ///////////////// Validate intersected flags ////////////////////////
-//            printf("//////// Validate intersected flags; intersected: %d //////// \n", intersected);
+            printf("//////// Validate intersected flags; intersected: %d //////// \n", intersected);
             bool is_need_merging = FALSE;
             int sid_flag = 0;
 

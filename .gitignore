@@ -34,6 +34,12 @@ build/.ninja_deps
 build/.ninja_log
 build/Makefile
 
+# Pre-trained mode: Person + Flag
+cfg/yolo-obj.cfg
+data/obj.data
+data/obj.names
+yolo-obj_best.weights
+
 # OS Generated #
 .DS_Store*
 ehthumbs.db

@@ -10,10 +10,11 @@ More details: http://pjreddie.com/darknet/yolo/
         2. File `coco.names`
     - Paste those files into directory `data`.
 - Sample usage:
-```
-./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output sample_dataset/00.jpg
-./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output sample_dataset/11.jpg
-```
+    - Using pre-trained weight (COCO):
+        - `./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output sample_dataset/00.jpg`
+        - `./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output sample_dataset/11.jpg`
+    - Using pre-trained weight (OID; [Google Open Image Dataset](https://storage.googleapis.com/openimages/web/visualizer/index.html?set=train&type=segmentation&r=false&c=%2Fm%2F01j3zr):
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-obj_best.weights -ext_output data/person-flag-4.jpg`
 - re-compile after any modification:
 ```
 make
