@@ -31,7 +31,7 @@ typedef int bool;
 #define RATIO_H 0.35
 
 // Ardi: Define the setup
-#define DEFAULT_CODE 0
+#define DEFAULT_CODE 1
 #define MB_BOX 1
 
 // Use image "11.jpg" and parameter below,

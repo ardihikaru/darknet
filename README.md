@@ -13,9 +13,52 @@ More details: http://pjreddie.com/darknet/yolo/
     - Using pre-trained weight (COCO):
         - `./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output sample_dataset/00.jpg`
         - `./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output sample_dataset/11.jpg`
-    - Using pre-trained weight (OID; [Google Open Image Dataset](https://storage.googleapis.com/openimages/web/visualizer/index.html?set=train&type=segmentation&r=false&c=%2Fm%2F01j3zr):
-        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-obj_best.weights -ext_output data/person-flag-4.jpg`
-- re-compile after any modification:
+        - `./darknet detector test cfg/coco.data cfg/yolov3.cfg yolov3.weights -ext_output video.mp4`
+    - Using pre-trained weight (OID [person=1000; flag=1000]; [Google Open Image Dataset](https://storage.googleapis.com/openimages/web/visualizer/index.html?set=train&type=segmentation&r=false&c=%2Fm%2F01j3zr):
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset1-best.weights -ext_output data/person-flag-4.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset1-best.weights -ext_output sample_dataset/05.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset1-best.weights -ext_output sample_dataset/11.jpg`
+    - Using pre-trained weight (COCO Person [1,663] + OID Flag [1000]):
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset2-best.weights -ext_output data/person-flag-4.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset2-best.weights -ext_output sample_dataset/05.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset2-best.weights -ext_output sample_dataset/11.jpg` 
+    - Using pre-trained weight (COCO Person [64,114] + OID Flag):
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset3-best.weights -ext_output data/person-flag-4.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset3-best.weights -ext_output sample_dataset/05.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset3-best.weights -ext_output sample_dataset/11.jpg` 
+    - Using pre-trained weight (COCO Person [64,114] + OID Flag):
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset4-best.weights -ext_output data/person-flag-4.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset4-best.weights -ext_output sample_dataset/05.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj.cfg yolo-dset4-best.weights -ext_output sample_dataset/11.jpg` 
+    - Using pre-trained weight (COCO Person [3k] + OID Person [3k] + OID Flag [6k]):
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-best.weights -ext_output data/person-flag-4.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-best.weights -ext_output sample_dataset/05.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-best.weights -ext_output sample_dataset/11.jpg` 
+        
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-best-final.weights -ext_output data/person-flag-4.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-best-final.weights -ext_output sample_dataset/05.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-best-final.weights -ext_output sample_dataset/11.jpg` 
+        
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-2000.weights -ext_output data/person-flag-4.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-2000.weights -ext_output sample_dataset/05.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-2000.weights -ext_output sample_dataset/11.jpg` 
+        
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset6-best.weights -ext_output data/person-flag-4.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset6-best.weights -ext_output sample_dataset/05.jpg`
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset6-best.weights -ext_output sample_dataset/11.jpg` 
+        - `./darknet detector test data/obj.data cfg/yolo-obj-v5.cfg yolo-dset6-best.weights data/Comparison/videos/customTest_MIRC-Roadside-5s.mp4 -out_filename data/Comparison/videos/customTest_MIRC-Roadside-5s.avi -dont_show` 
+    - Using pre-trained weight ([VizDrone](https://arxiv.org/abs/1804.07437)): 
+    ** NB: Please re-compile after any modification
+- List of pre-trained models:
+
+- Sample using ffmpeg for UDP video streaming:
+    - `ffmpeg -re -i data/video/video.mp4 -f mpegts udp://localhost:40000`
+        - To test, you can use VLC Player and access through URL: `udp://@localhost:40000`
+        - To test with YOLO, use script below:
+            - Show Video (UDP): `./darknet detector demo data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-best.weights udp://localhost:40000 -out_filename test_result.avi`
+            - Dont Show Video (UDP): `./darknet detector demo data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-best.weights udp://localhost:40000 -out_filename test_result.avi -dont_show`
+            - Show Video (HTML): `./darknet detector demo data/obj.data cfg/yolo-obj-v5.cfg yolo-dset5-best.weights rtsp://login:password@localhost:554 -json_port 8070 -mjpeg_port 8090 -ext_output -dont_show`
+  Use table: 
 ```
 make
 ```
