@@ -35,25 +35,25 @@ if __name__ == '__main__':
     print(" ## mean_cpu_acc_proc_latency = ", mean_cpu_acc_proc_latency)
 
     fig = plt.figure()
-    title = "Processing Latency of TM-04: CPU vs GPU"
+    title = "Recognition Latency of TM-04: CPU vs GPU"
     plt.title(title)
-    plt.plot(ks, gpu_proc_latency, label='GPU Processing Latency (ms)')
-    plt.plot(ks, cpu_proc_latency, label='CPU Processing Latency (ms)')
+    plt.plot(ks, gpu_proc_latency, label='GPU Recognition Latency (ms)')
+    plt.plot(ks, cpu_proc_latency, label='CPU Recognition Latency (ms)')
     # plt.axhline(mean_gpu_acc_proc_latency, color='green', linestyle='dashed', linewidth=1)
     # plt.axhline(mean_cpu_acc_proc_latency, color='orange', linestyle='dashed', linewidth=1)
     plt.xlabel('Frame ID')
     plt.ylabel('Latency (ms)')
     plt.legend()
     plt.show()
-    fig.savefig('results/processing-latency-comparison.png', dpi=fig.dpi)
+    fig.savefig('results/recognition-latency-comparison.png', dpi=fig.dpi, transparent=True)
 
     fig_gpu = plt.figure()
-    title = "GPU Only Processing Latency of TM-04"
+    title = "GPU Only Recognition Latency of TM-04"
     plt.title(title)
-    plt.plot(ks, gpu_proc_latency, label='GPU Processing Latency (ms)')
+    plt.plot(ks, gpu_proc_latency, label='GPU Recognition Latency (ms)')
     plt.axhline(mean_gpu_acc_proc_latency, color='green', linestyle='dashed', linewidth=1)
     plt.xlabel('Frame ID')
     plt.ylabel('Latency (ms)')
     plt.legend()
     plt.show()
-    fig_gpu.savefig('results/processing-latency-gpu.png', dpi=fig.dpi)
+    fig_gpu.savefig('results/recognition-latency-gpu.png', dpi=fig_gpu.dpi, transparent=True)

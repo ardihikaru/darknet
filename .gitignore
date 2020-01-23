@@ -1,9 +1,12 @@
+# Other resources
+sample_dataset/AlexeyAB
+
 *.o
 *.a
 *.dSYM
-*.csv
+#*.csv
 *.out
-*.png
+#*.png
 *.so
 *.exe
 *.dll
